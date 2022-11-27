@@ -40,8 +40,17 @@ class PhoneCrudController extends CrudController
      */
     protected function setupListOperation()
     {
-        CRUD::column('purchase_id');
-        CRUD::column('brand_model_id');
+//        CRUD::column('purchase_id');
+        $this->crud->addColumn([
+            // any type of relationship
+            'name'         => 'brand_model_id', // name of relationship method in the model
+            'type'         => 'relationship',
+            'label'        => 'Brand - model', // Table column heading
+            // OPTIONAL
+             'entity'    => 'brandModel', // the method that defines the relationship in your Model
+             'attribute' => 'full_name', // foreign key attribute that is shown to user
+             'model'     => 'App\Models\BrandModel::class', // foreign key model
+        ]);
         CRUD::column('item_cost');
         CRUD::column('imei_1');
         CRUD::column('imei_2');
@@ -69,16 +78,31 @@ class PhoneCrudController extends CrudController
     {
         CRUD::setValidation(PhoneRequest::class);
 
-        CRUD::field('purchase_id');
-        CRUD::field('brand_model_id');
-        CRUD::field('item_cost');
-        CRUD::field('imei_1');
-        CRUD::field('imei_2');
-        CRUD::field('rom_size');
-        CRUD::field('color');
-        CRUD::field('description');
-        CRUD::field('item_sellout_price');
-        CRUD::field('is_new');
+        CRUD::field('brandModel')->wrapper([
+            'class' => 'form-group col-md-6',
+        ]);
+        CRUD::field('item_cost')->wrapper([
+            'class' => 'form-group col-md-6',
+        ]);
+        CRUD::field('imei_1')->wrapper([
+            'class' => 'form-group col-md-6',
+        ]);
+        CRUD::field('imei_2')->wrapper([
+            'class' => 'form-group col-md-6',
+        ]);
+        CRUD::field('rom_size')->wrapper([
+            'class' => 'form-group col-md-6',
+        ]);
+        CRUD::field('color')->wrapper([
+            'class' => 'form-group col-md-6',
+        ]);
+        CRUD::field('item_sellout_price')->wrapper([
+            'class' => 'form-group col-md-6',
+        ]);
+        CRUD::field('is_new')->wrapper([
+            'class' => 'form-group col-md-6 align-self-center',
+        ]);
+        CRUD::field('description')->type('textarea');
 
         /**
          * Fields can be defined using the fluent syntax or array syntax:

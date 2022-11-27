@@ -46,7 +46,7 @@ class BrandModelCrudController extends CrudController
 //        CRUD::column('brand')->type('editable_select');
 //        CRUD::column('name')->type('editable_text');
         CRUD::addColumn([
-            'name' => 'brand',
+            'name' => 'brand_id',
             'label' => 'Brand',
             'type' => 'editable_select',
             'options' => \App\Models\Brand::all()->pluck('name', 'id')->toArray(),

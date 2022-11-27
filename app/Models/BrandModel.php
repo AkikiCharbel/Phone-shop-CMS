@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class BrandModel extends Model
 {
@@ -30,8 +31,17 @@ class BrandModel extends Model
         'brand_id' => 'integer',
     ];
 
-    public function brand()
+    protected $appends = [
+        'full_name',
+    ];
+
+    public function brand(): BelongsTo
     {
         return $this->belongsTo(Brand::class);
+    }
+
+    public function getFullNameAttribute(): string
+    {
+        return $this->brand->name.' - '.$this->name;
     }
 }

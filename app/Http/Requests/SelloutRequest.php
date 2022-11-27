@@ -26,7 +26,7 @@ class SelloutRequest extends FormRequest
     {
         return [
             'customer' => 'required|integer|exists:users,id',
-            'amout' => 'required|numeric|between:-99999999,99999999',
+            'amount' => 'required|numeric|between:0,99999999',
         ];
     }
 

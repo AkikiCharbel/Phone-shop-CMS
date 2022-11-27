@@ -19,4 +19,3 @@
 <li class="nav-item"><a class="nav-link" href="{{ backpack_url('phone') }}"><i class="nav-icon la la-question"></i> Phones</a></li>
 
 <li class="nav-item"><a class="nav-link" href="{{ backpack_url('sellout') }}"><i class="nav-icon la la-question"></i> Sellouts</a></li>
-<li class="nav-item"><a class="nav-link" href="{{ backpack_url('sellable') }}"><i class="nav-icon la la-question"></i> Sellables</a></li>
