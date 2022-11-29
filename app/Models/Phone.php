@@ -69,8 +69,8 @@ class Phone extends Model
 
     public function getPhoneInfoAttribute(): string
     {
-        return $this->imei_1. ' / '
-            .$this->imei_2. ' / '
+        return $this->imei_1.' / '
+            .$this->imei_2.' / '
             .$this->brandModel->full_name.' / '
             .$this->rom_size.' / '
             .$this->color;

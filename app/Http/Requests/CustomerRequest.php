@@ -24,10 +24,16 @@ class CustomerRequest extends FormRequest
      */
     public function rules()
     {
+        $id = null;
+
+        if ($this->get('id') != null || request()->route('id') != null){
+            $id = $this->get('id') ?? request()->route('id');
+        }
+
         return [
-             'name' => 'required|max:255',
-             'phone_number' => 'required|min:5|max:255|unique:users,email',
-             'email' => 'required|max:255|email|unique:users,email',
+            'name' => 'required|max:255',
+            'phone_number' => 'required|min:5|max:255|unique:users,phone_number,' . $id,
+            'email' => 'required|max:255|email|unique:users,email,' . $id,
         ];
     }
 

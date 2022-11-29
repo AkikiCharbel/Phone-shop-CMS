@@ -3,16 +3,15 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Requests\CustomerRequest;
-use App\Models\User;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Http\Controllers\Operations\CreateOperation;
 use Backpack\CRUD\app\Http\Controllers\Operations\DeleteOperation;
+use Backpack\CRUD\app\Http\Controllers\Operations\InlineCreateOperation;
 use Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
 use Backpack\CRUD\app\Http\Controllers\Operations\ShowOperation;
 use Backpack\CRUD\app\Http\Controllers\Operations\UpdateOperation;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 use Illuminate\Http\RedirectResponse;
-
 
 class CustomerCrudController extends CrudController
 {
@@ -21,11 +20,13 @@ class CustomerCrudController extends CrudController
     use UpdateOperation { update as traitUpdate; }
     use DeleteOperation;
     use ShowOperation;
+    use InlineCreateOperation;
+
 
     public function setup(): void
     {
         CRUD::setModel(\App\Models\User::class);
-        CRUD::setRoute(config('backpack.base.route_prefix') . '/customer');
+        CRUD::setRoute(config('backpack.base.route_prefix').'/customer');
         CRUD::setEntityNameStrings('customer', 'customers');
     }
 
@@ -58,5 +59,4 @@ class CustomerCrudController extends CrudController
 
         return $response;
     }
-
 }

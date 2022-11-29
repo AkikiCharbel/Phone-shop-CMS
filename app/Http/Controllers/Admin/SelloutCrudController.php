@@ -3,67 +3,65 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Requests\SelloutRequest;
+use App\Models\User;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
+use Backpack\CRUD\app\Http\Controllers\Operations\CreateOperation;
+use Backpack\CRUD\app\Http\Controllers\Operations\DeleteOperation;
+//TODO:: change it in production but for the time being to prevent the red notice
+use \Backpack\Pro\Http\Controllers\Operations\FetchOperation;
+use Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
+use Backpack\CRUD\app\Http\Controllers\Operations\ShowOperation;
+use Backpack\CRUD\app\Http\Controllers\Operations\UpdateOperation;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 
-/**
- * Class SelloutCrudController
- *
- * @property-read \Backpack\CRUD\app\Library\CrudPanel\CrudPanel $crud
- */
 class SelloutCrudController extends CrudController
 {
-    use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
-    use \Backpack\CRUD\app\Http\Controllers\Operations\CreateOperation;
-    use \Backpack\CRUD\app\Http\Controllers\Operations\UpdateOperation;
-    use \Backpack\CRUD\app\Http\Controllers\Operations\DeleteOperation;
-    use \Backpack\CRUD\app\Http\Controllers\Operations\ShowOperation;
+    use ListOperation;
+    use CreateOperation;
+    use UpdateOperation;
+    use DeleteOperation;
+    use ShowOperation;
+    use FetchOperation;
 
-    /**
-     * Configure the CrudPanel object. Apply settings to all operations.
-     *
-     * @return void
-     */
-    public function setup()
+    public function setup(): void
     {
         CRUD::setModel(\App\Models\Sellout::class);
-        CRUD::setRoute(config('backpack.base.route_prefix') . '/sellout');
+        CRUD::setRoute(config('backpack.base.route_prefix').'/sellout');
         CRUD::setEntityNameStrings('sellout', 'sellouts');
     }
 
-    /**
-     * Define what happens when the List operation is loaded.
-     *
-     * @see  https://backpackforlaravel.com/docs/crud-operation-list-entries
-     *
-     * @return void
-     */
-    protected function setupListOperation()
+    protected function setupListOperation(): void
     {
         CRUD::column('customer');
         CRUD::column('amount');
-
-        /**
-         * Columns can be defined using the fluent syntax or array syntax:
-         * - CRUD::column('price')->type('number');
-         * - CRUD::addColumn(['name' => 'price', 'type' => 'number']);
-         */
     }
 
-    /**
-     * Define what happens when the Create operation is loaded.
-     *
-     * @see https://backpackforlaravel.com/docs/crud-operation-create
-     *
-     * @return void
-     */
-    protected function setupCreateOperation()
+    protected function setupCreateOperation(): void
     {
         CRUD::setValidation(SelloutRequest::class);
 
-        CRUD::field('customer');
-        CRUD::field('amount');
+//        CRUD::field('customer')->inline_create(['entity' => 'user.customer']);
+//        CRUD::field('amount');
         $this->crud->addFields([
+            [
+                'type' => "relationship",
+                'name' => 'customer', // the method on your model that defines the relationship
+                'ajax' => true,
+                'minimum_input_length'    => 0,
+                'inline_create' => [ // specify the entity in singular
+                    'data_source' => backpack_url('monster/fetch/contact-number'),
+                    'entity' => 'User', // the entity in singular
+                    'force_select' => true, // should the inline-created entry be immediately selected?
+                    'modal_class' => 'modal-dialog modal-xl', // use modal-sm, modal-lg to change width
+                    'modal_route' => route('customer-inline-create'), // InlineCreate::getInlineCreateModal()
+                    'create_route' =>  route('customer-inline-create-save'), // InlineCreate::storeInlineCreate()
+                ]
+            ],
+            [
+                'name' => 'amount',
+                'type' => 'number',
+                'label' => 'Amount',
+            ],
             [   // repeatable
                 'name' => 'soled_phones',
                 'label' => 'Phones',
@@ -81,9 +79,9 @@ class SelloutCrudController extends CrudController
 
                         'wrapper' => ['class' => 'form-group col-md-12'],
                         // also optional
-                        //                        'options'   => (function ($query) {
-                        //                            return $query->orderBy('name', 'ASC')->where('depth', 1)->get();
-                        //                        }), // force the related options to be a custom query, instead of all(); you can use this to filter the results show in the select
+                        // 'options'   => (function ($query) {
+                        //      return $query->orderBy('name', 'ASC')->where('depth', 1)->get();
+                        // }), // force the related options to be a custom query, instead of all(); you can use this to filter the results show in the select
                     ],
                     [
                         'name' => 'imei_1',
@@ -95,25 +93,31 @@ class SelloutCrudController extends CrudController
                 // optional
                 'new_item_label' => 'Add Phone', // customize the text of the button
                 'init_rows' => '1',
-            ]
+            ],
         ]);
-
-        /**
-         * Fields can be defined using the fluent syntax or array syntax:
-         * - CRUD::field('price')->type('number');
-         * - CRUD::addField(['name' => 'price', 'type' => 'number']));
-         */
     }
 
-    /**
-     * Define what happens when the Update operation is loaded.
-     *
-     * @see https://backpackforlaravel.com/docs/crud-operation-update
-     *
-     * @return void
-     */
-    protected function setupUpdateOperation()
+    protected function setupUpdateOperation(): void
     {
         $this->setupCreateOperation();
+    }
+
+
+    protected function fetchCustomer()
+    {
+        return $this->fetch([
+            'model' => User::class,
+            'query' => function($model) {
+                $model = $model->whereHas('roles', function ($q){
+                    $q->where('name', 'customer');
+                });
+                $search = request()->input('q') ?? false;
+                if ($search) {
+                    return $model->whereRaw('name LIKE "%' . $search . '%"');
+                }else{
+                    return $model;
+                }
+            },
+        ]);
     }
 }
