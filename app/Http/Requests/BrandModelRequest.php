@@ -25,7 +25,7 @@ class BrandModelRequest extends FormRequest
     public function rules()
     {
         return [
-            'brand' => 'required|integer|exists:brands,id',
+            'brand_id' => 'required|integer|exists:brands,id',
             'name' => 'required|string',
         ];
     }

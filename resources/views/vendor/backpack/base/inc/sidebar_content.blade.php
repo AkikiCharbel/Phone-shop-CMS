@@ -19,3 +19,5 @@
 <li class="nav-item"><a class="nav-link" href="{{ backpack_url('phone') }}"><i class="nav-icon la la-question"></i> Phones</a></li>
 
 <li class="nav-item"><a class="nav-link" href="{{ backpack_url('sellout') }}"><i class="nav-icon la la-question"></i> Sellouts</a></li>
+
+<li class="nav-item"><a class="nav-link" href="{{ backpack_url('customer') }}"><i class="nav-icon la la-question"></i> Customers</a></li>

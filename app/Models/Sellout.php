@@ -41,6 +41,7 @@ class Sellout extends Model
 
     public function phones(): MorphToMany
     {
-        return $this->morphedByMany(Phone::class, 'sellable');
+        return $this->morphedByMany(Phone::class, 'sellable')
+            ->withPivot('price');
     }
 }

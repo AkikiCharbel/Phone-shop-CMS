@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Requests\PhoneRequest;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
+use Backpack\EditableColumns\Http\Controllers\Operations\MinorUpdateOperation;
+use Backpack\Pro\Http\Controllers\Operations\BulkDeleteOperation;
 
 /**
  * Class PhoneCrudController
@@ -18,6 +20,8 @@ class PhoneCrudController extends CrudController
     use \Backpack\CRUD\app\Http\Controllers\Operations\UpdateOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\DeleteOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\ShowOperation;
+    use BulkDeleteOperation;
+    use MinorUpdateOperation;
 
     /**
      * Configure the CrudPanel object. Apply settings to all operations.
@@ -40,16 +44,15 @@ class PhoneCrudController extends CrudController
      */
     protected function setupListOperation()
     {
-//        CRUD::column('purchase_id');
         $this->crud->addColumn([
             // any type of relationship
-            'name'         => 'brand_model_id', // name of relationship method in the model
-            'type'         => 'relationship',
-            'label'        => 'Brand - model', // Table column heading
+            'name' => 'brand_model_id', // name of relationship method in the model
+            'type' => 'relationship',
+            'label' => 'Brand - model', // Table column heading
             // OPTIONAL
-             'entity'    => 'brandModel', // the method that defines the relationship in your Model
-             'attribute' => 'full_name', // foreign key attribute that is shown to user
-             'model'     => 'App\Models\BrandModel::class', // foreign key model
+            'entity' => 'brandModel', // the method that defines the relationship in your Model
+            'attribute' => 'full_name', // foreign key attribute that is shown to user
+            'model' => 'App\Models\BrandModel::class', // foreign key model
         ]);
         CRUD::column('item_cost');
         CRUD::column('imei_1');

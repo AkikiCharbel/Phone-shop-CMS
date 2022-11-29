@@ -21,4 +21,5 @@ Route::crud('brand', 'BrandCrudController');
     Route::crud('purchase', 'PurchaseCrudController');
     Route::crud('phone', 'PhoneCrudController');
     Route::crud('sellout', 'SelloutCrudController');
+    Route::crud('customer', 'CustomerCrudController');
 }); // this should be the absolute last line of this file
