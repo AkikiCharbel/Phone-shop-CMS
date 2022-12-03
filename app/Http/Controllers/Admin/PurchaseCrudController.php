@@ -41,8 +41,8 @@ class PurchaseCrudController extends CrudController
         $this->crud->setCreateContentClass('col-md-12 bold-labels');
         CRUD::setValidation(PurchaseRequest::class);
 
-        CRUD::field('shipping_source')->wrapper(['class' => 'form-group col-md-4']);
-        CRUD::field('shipping_date')->wrapper(['class' => 'form-group col-md-4']);
+        CRUD::field('shipping_source')->wrapper(['class' => 'form-group col-md-4'])->label('Shipping Source');
+        CRUD::field('shipping_date')->wrapper(['class' => 'form-group col-md-4'])->label('Shipping Date');
         CRUD::field('date')->wrapper(['class' => 'form-group col-md-4'])->label('Purchase Date');
         $this->crud->addFields([
             [   // repeatable
@@ -51,7 +51,7 @@ class PurchaseCrudController extends CrudController
                 'type' => 'repeatable',
                 'subfields' => [ // also works as: "fields"
                     [  // Select2
-                        'label' => 'Brand - model',
+                        'label' => 'Brand - Model',
                         'type' => 'select2',
                         'name' => 'brand_model_id', // the db column for the foreign key
 

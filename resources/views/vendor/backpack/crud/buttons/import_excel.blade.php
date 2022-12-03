@@ -1,10 +1,5 @@
-
 {{--@if ($crud->hasAccess('import_exel'))--}}
 <a href="javascript:void(0)" onclick="importExcel(this)" class="btn btn-warning"><i class="la la-arrow-down"></i> Import Excel</a>
-
-{{--    <a href="javascript:void(0)" onclick="importExcel(this)" class="btn btn-sm btn-link" data-button-type="import">--}}
-{{--        <span class="ladda-label"><i class="la la-plus"></i> Import {{ $crud->entity_name }}</span>--}}
-{{--    </a>--}}
 {{--@endif--}}
 
 @push('after_scripts')
@@ -26,6 +21,7 @@
                         element: "input",
                         attributes: {
                             type: "file",
+                            id: 'excel-file',
                             className: 'border-0'
                         },
                     },
@@ -46,44 +42,24 @@
                     },
                 }).then((value) => {
                     if (value) {
-                        var ajax_calls = [];
-                        var delete_route = "{{ url($crud->route) }}";
+                        var formData = new FormData();
+                        formData.append('file', $('#excel-file')[0].files[0]);
+
+                        var import_route = "/api/admin/import-phones";
 
                         // submit an AJAX delete call
                         $.ajax({
-                            url: delete_route,
+                            url: import_route,
                             type: 'POST',
-                            data: { entries: crud.checkedItems },
+                            data: formData,
+                            processData: false,
+                            contentType: false,
                             success: function(result) {
-                                if (Array.isArray(result)) {
                                     // Show a success notification bubble
                                     new Noty({
                                         type: "success",
-                                        text: "<strong>{!! trans('backpack::crud.bulk_delete_sucess_title') !!}</strong><br>"+crud.checkedItems.length+"{!! trans('backpack::crud.bulk_delete_sucess_message') !!}"
+                                        text: "<strong>The file is imported successfully</strong><br>"
                                     }).show();
-                                } else {
-                                    // if the result is an array, it means
-                                    // we have notification bubbles to show
-                                    if (result instanceof Object) {
-                                        // trigger one or more bubble notifications
-                                        Object.entries(result).forEach(function(entry, index) {
-                                            var type = entry[0];
-                                            entry[1].forEach(function(message, i) {
-                                                new Noty({
-                                                    type: type,
-                                                    text: message
-                                                }).show();
-                                            });
-                                        });
-                                    } else {
-                                        // Show a warning notification bubble
-                                        new Noty({
-                                            type: "warning",
-                                            text: "<strong>{!! trans('backpack::crud.bulk_delete_error_title') !!}</strong><br>{!! trans('backpack::crud.bulk_delete_error_message') !!}"
-                                        }).show();
-                                    }
-                                }
-
                                 // Move to previous page in case of deleting all the items in table
                                 if(crud.table.rows().count() === crud.checkedItems.length) {
                                     crud.table.page("previous");
@@ -96,7 +72,7 @@
                                 // Show an alert with the result
                                 new Noty({
                                     type: "warning",
-                                    text: "<strong>{!! trans('backpack::crud.bulk_delete_error_title') !!}</strong><br>{!! trans('backpack::crud.bulk_delete_error_message') !!}"
+                                    text: "<strong>Error in uploading File</strong><br>"
                                 }).show();
                             }
                         });
@@ -106,3 +82,5 @@
         }
     </script>
 @endpush
+
+<!-- Button trigger modal -->
