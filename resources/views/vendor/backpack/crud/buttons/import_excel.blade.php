@@ -15,7 +15,9 @@
 
                 swal({
                     title: "Make sure the excel file columns match!",
-                    text: "hello darkness my old friend",
+                    text: "3-Shipping Source \n4-Shipping Date \n5-Item Cost " +
+                        "\n6-Brand Name \n7-Brand Model \n8-IMEI 1 \n9-IMEI 2 \n10-Rom Size \n11-Color" +
+                        "\n17-Is New (1 for new, 0 for used)",
                     icon: "warning",
                     content:{
                         element: "input",
@@ -55,18 +57,7 @@
                             processData: false,
                             contentType: false,
                             success: function(result) {
-                                    // Show a success notification bubble
-                                    new Noty({
-                                        type: "success",
-                                        text: "<strong>The file is imported successfully</strong><br>"
-                                    }).show();
-                                // Move to previous page in case of deleting all the items in table
-                                if(crud.table.rows().count() === crud.checkedItems.length) {
-                                    crud.table.page("previous");
-                                }
-
-                                crud.checkedItems = [];
-                                crud.table.draw(false);
+                                window.location.reload();
                             },
                             error: function(result) {
                                 // Show an alert with the result

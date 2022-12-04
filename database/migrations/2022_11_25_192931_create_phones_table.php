@@ -22,10 +22,10 @@ class CreatePhonesTable extends Migration
             $table->float('item_cost', 8, 2);
             $table->string('imei_1');
             $table->string('imei_2')->nullable();
-            $table->integer('rom_size');
+            $table->string('rom_size');
             $table->string('color');
             $table->string('description')->nullable();
-            $table->float('item_sellout_price', 8);
+            $table->float('item_sellout_price', 8)->nullable();
             $table->boolean('is_new')->default(true);
         });
 
