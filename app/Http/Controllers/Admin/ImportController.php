@@ -24,13 +24,11 @@ class ImportController extends Controller
 
     public function store(Request $request): JsonResponse
     {
-        $import = new ImportService();
-        $import->onlySheets('Stock');
-        $excel = Excel::import($import, request()->all()['file']);
-        $excel = Excel::toArray($import, request()->all()['file']);
-        dd($excel);
-        try {
 
+        try {
+            $import = new ImportService();
+            $import->onlySheets('Stock');
+            $excel = Excel::import($import, request()->all()['file']);
             return response()->json(['message' => 'Import success'], Response::HTTP_CREATED);
 
         } catch (Exception $exception) {
