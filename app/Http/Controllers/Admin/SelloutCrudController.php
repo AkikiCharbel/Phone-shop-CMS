@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Requests\SelloutRequest;
+use App\Models\Phone;
 use App\Models\User;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Http\Controllers\Operations\CreateOperation;
@@ -12,17 +13,19 @@ use Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
 use Backpack\CRUD\app\Http\Controllers\Operations\ShowOperation;
 use Backpack\CRUD\app\Http\Controllers\Operations\UpdateOperation;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
+use Backpack\Pro\Http\Controllers\Operations\BulkDeleteOperation;
 use Backpack\Pro\Http\Controllers\Operations\FetchOperation;
 use Illuminate\Http\RedirectResponse;
 
 class SelloutCrudController extends CrudController
 {
     use ListOperation;
-    use CreateOperation { create as traitCreate; }
+    use CreateOperation { store as traitStore; }
     use UpdateOperation { update as traitUpdate; }
     use DeleteOperation;
     use ShowOperation;
     use FetchOperation;
+    use BulkDeleteOperation;
 
     public function setup(): void
     {
@@ -45,7 +48,7 @@ class SelloutCrudController extends CrudController
         $this->crud->addFields([
             [
                 'type' => 'relationship',
-                'name' => 'customer', // the method on your model that defines the relationship
+                'name' => 'customer_id', // the method on your model that defines the relationship
                 'ajax' => true,
                 'minimum_input_length' => 0,
                 'inline_create' => [ // specify the entity in singular
@@ -65,7 +68,7 @@ class SelloutCrudController extends CrudController
                     [
                         'label' => 'Phone',
                         'type' => 'select2',
-                        'name' => 'phones', // the db column for the foreign key
+                        'name' => 'phone_id', // the db column for the foreign key
 
                         'entity' => 'phones', // the method that defines the relationship in your Model
                         'model' => "App\Models\Phone", // foreign key model
@@ -73,9 +76,9 @@ class SelloutCrudController extends CrudController
 
                         'wrapper' => ['class' => 'form-group col-md-9'],
 
-                        // 'options'   => (function ($query) {
-                        //      return $query->orderBy('name', 'ASC')->where('depth', 1)->get();
-                        // }), // force the related options to be a custom query, instead of all(); you can use this to filter the results show in the select
+                         'options'   => (function ($query) {
+                              return $query->where('item_sellout_price', null)->get();
+                         }), // force the related options to be a custom query, instead of all(); you can use this to filter the results show in the select
                     ],
                     [
                         'name' => 'price_sold',
@@ -100,7 +103,7 @@ class SelloutCrudController extends CrudController
     protected function setupUpdateOperation(): void
     {
         $this->setupCreateOperation();
-        $this->crud->setCreateContentClass('col-md-12 bold-labels');
+        $this->crud->setUpdateContentClass('col-md-12 bold-labels');
     }
 
     protected function fetchCustomer()
@@ -124,9 +127,18 @@ class SelloutCrudController extends CrudController
     public function store(): RedirectResponse
     {
         $response = $this->traitStore();
-
-        $this->crud->entry->phones()->createMany(request()->get('phone_list'));
+        foreach (request()->get('soled_phones') as $phoneObj) {
+            $phone = Phone::find($phoneObj['phone_id']);
+            $phone->item_sellout_price = $phoneObj['price_sold'];
+            $phone->save();
+            $this->crud->entry->phones()->attach($phone->id);
+        }
 
         return $response;
+    }
+
+    public function update()
+    {
+        return redirect(route('sellout.index'));
     }
 }

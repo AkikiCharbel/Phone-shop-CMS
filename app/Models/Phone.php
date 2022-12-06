@@ -64,7 +64,8 @@ class Phone extends Model
 
     public function sellout(): MorphToMany
     {
-        return $this->morphToMany(Sellout::class, 'sellable');
+        return $this->morphToMany(Sellout::class, 'sellable')
+            ->withTimestamps();
     }
 
     public function getPhoneInfoAttribute(): string

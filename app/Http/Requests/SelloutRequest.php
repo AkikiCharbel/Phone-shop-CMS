@@ -25,7 +25,7 @@ class SelloutRequest extends FormRequest
     public function rules()
     {
         return [
-            'customer' => 'required|integer|exists:users,id',
+            'customer_id' => 'required|integer|exists:users,id',
             'amount' => 'required|numeric|between:0,99999999',
         ];
     }

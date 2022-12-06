@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Backpack\CRUD\app\Models\Traits\CrudTrait;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -42,6 +43,23 @@ class Sellout extends Model
     public function phones(): MorphToMany
     {
         return $this->morphedByMany(Phone::class, 'sellable')
-            ->withPivot('price');
+            ->withTimestamps();
+    }
+
+    protected function soledPhones(): Attribute
+    {
+        return Attribute::make(
+            get: function () {
+                $phones = [];
+                foreach ($this->phones as $phone) {
+                    $phones[] = [
+                        'phone_id' => $phone->id,
+                        'price_sold' => $phone->item_sellout_price,
+                    ];
+                }
+
+                return $phones;
+            }
+        );
     }
 }
