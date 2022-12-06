@@ -38,8 +38,8 @@ class PurchasePhoneImport implements ToCollection
                 $brandModel->phones()->create([
                     'purchase_id' => $purchase->id,
                     'item_cost' => $row[4],
-                    'imei_1' => $row[7],
-                    'imei_2' => $row[8],
+                    'imei_1' => (int)$row[7],
+                    'imei_2' => (int)$row[8],
                     'rom_size' => explode(' ', trim($row[9]))[0],
                     'color' => $row[10],
                     'description' => null,

@@ -27,6 +27,8 @@ class ImportController extends Controller
         $import = new ImportService();
         $import->onlySheets('Stock');
         $excel = Excel::import($import, request()->all()['file']);
+        $excel = Excel::toArray($import, request()->all()['file']);
+        dd($excel);
         try {
 
             return response()->json(['message' => 'Import success'], Response::HTTP_CREATED);
