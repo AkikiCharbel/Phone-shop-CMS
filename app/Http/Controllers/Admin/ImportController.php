@@ -15,7 +15,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Class ImportController
- * @package App\Http\Controllers\Admin
+ *
  * @property-read CrudPanel $crud
  */
 class ImportController extends Controller
@@ -24,17 +24,15 @@ class ImportController extends Controller
 
     public function store(Request $request): JsonResponse
     {
-
         try {
             $import = new ImportService();
             $import->onlySheets('Stock');
             $excel = Excel::import($import, request()->all()['file']);
-            return response()->json(['message' => 'Import success'], Response::HTTP_CREATED);
 
+            return response()->json(['message' => 'Import success'], Response::HTTP_CREATED);
         } catch (Exception $exception) {
             return response()->json(['message' => 'Import failed'], Response::HTTP_BAD_REQUEST);
         }
-
     }
 
     public function conditionalSheets(): array

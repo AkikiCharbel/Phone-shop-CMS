@@ -22,7 +22,6 @@ class CustomerCrudController extends CrudController
     use ShowOperation;
     use InlineCreateOperation;
 
-
     public function setup(): void
     {
         CRUD::setModel(\App\Models\User::class);

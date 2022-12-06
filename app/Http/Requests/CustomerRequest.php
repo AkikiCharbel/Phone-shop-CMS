@@ -26,14 +26,14 @@ class CustomerRequest extends FormRequest
     {
         $id = null;
 
-        if ($this->get('id') != null || request()->route('id') != null){
+        if ($this->get('id') != null || request()->route('id') != null) {
             $id = $this->get('id') ?? request()->route('id');
         }
 
         return [
             'name' => 'required|max:255',
-            'phone_number' => 'required|min:5|max:255|unique:users,phone_number,' . $id,
-            'email' => 'required|max:255|email|unique:users,email,' . $id,
+            'phone_number' => 'required|min:5|max:255|unique:users,phone_number,'.$id,
+            'email' => 'required|max:255|email|unique:users,email,'.$id,
         ];
     }
 

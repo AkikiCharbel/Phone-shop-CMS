@@ -13,13 +13,13 @@ use PhpOffice\PhpSpreadsheet\Shared\Date;
 class PurchasePhoneImport implements ToCollection
 {
     /**
-    * @param Collection $collection
-    */
+     * @param  Collection  $collection
+     */
     public function collection(Collection $collection)
     {
-        DB::transaction(function () use ($collection){
+        DB::transaction(function () use ($collection) {
             $collection->shift();
-            foreach ($collection as $row){
+            foreach ($collection as $row) {
                 $purchase = Purchase::updateOrCreate(
                     ['shipping_date' => Date::excelToDateTimeObject($row[3]), 'shipping_source' => $row[2]],
                     ['shipping_date' => Date::excelToDateTimeObject($row[3]), 'shipping_source' => $row[2], 'date' => Date::excelToDateTimeObject($row[3])]
@@ -32,14 +32,14 @@ class PurchasePhoneImport implements ToCollection
                     ['brand_id' => $brand->id, 'name' => $row[6]]
                 );
 
-                if ($row[10] == null){
+                if ($row[10] == null) {
                     dd($row);
                 }
                 $brandModel->phones()->create([
                     'purchase_id' => $purchase->id,
                     'item_cost' => $row[4],
-                    'imei_1' => (int)$row[7],
-                    'imei_2' => (int)$row[8],
+                    'imei_1' => (int) $row[7],
+                    'imei_2' => (int) $row[8],
                     'rom_size' => explode(' ', trim($row[9]))[0],
                     'color' => $row[10],
                     'description' => null,
@@ -48,7 +48,5 @@ class PurchasePhoneImport implements ToCollection
                 ]);
             }
         });
-
     }
-
 }

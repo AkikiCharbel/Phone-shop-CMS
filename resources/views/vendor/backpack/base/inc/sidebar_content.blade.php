@@ -13,11 +13,11 @@
     </ul>
 </li>
 
-<li class="nav-item"><a class="nav-link" href="{{ backpack_url('brand') }}"><i class="nav-icon la la-question"></i> Brands</a></li>
-<li class="nav-item"><a class="nav-link" href="{{ backpack_url('brand-model') }}"><i class="nav-icon la la-question"></i> Brand models</a></li>
-<li class="nav-item"><a class="nav-link" href="{{ backpack_url('purchase') }}"><i class="nav-icon la la-question"></i> Purchases</a></li>
-<li class="nav-item"><a class="nav-link" href="{{ backpack_url('phone') }}"><i class="nav-icon la la-question"></i> Phones</a></li>
 
-<li class="nav-item"><a class="nav-link" href="{{ backpack_url('sellout') }}"><i class="nav-icon la la-question"></i> Sellouts</a></li>
+<li class="nav-item"><a class="nav-link" href="{{ backpack_url('sellout') }}"><i class="nav-icon las la-shopping-basket"></i> Sellouts</a></li>
+<li class="nav-item"><a class="nav-link" href="{{ backpack_url('customer') }}"><i class="nav-icon las la-user-tie"></i> Customers</a></li>
+<li class="nav-item"><a class="nav-link" href="{{ backpack_url('phone') }}"><i class="nav-icon las la-mobile"></i> Phones</a></li>
 
-<li class="nav-item"><a class="nav-link" href="{{ backpack_url('customer') }}"><i class="nav-icon la la-question"></i> Customers</a></li>
+<li class="nav-item"><a class="nav-link" href="{{ backpack_url('purchase') }}"><i class="nav-icon las la-store-alt"></i> Purchases</a></li>
+<li class="nav-item"><a class="nav-link" href="{{ backpack_url('brand') }}"><<i class="nav-icon las la-copyright"></i> Brands</a></li>
+<li class="nav-item"><a class="nav-link" href="{{ backpack_url('brand-model') }}"><i class="nav-icon las la-stream"></i> Brand models</a></li>
