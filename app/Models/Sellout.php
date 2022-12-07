@@ -40,6 +40,13 @@ class Sellout extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function availablePhones(): MorphToMany
+    {
+        return $this->morphedByMany(Phone::class, 'sellable')
+            ->where('item_sellout_price',  null)
+            ->withTimestamps();
+    }
+
     public function phones(): MorphToMany
     {
         return $this->morphedByMany(Phone::class, 'sellable')

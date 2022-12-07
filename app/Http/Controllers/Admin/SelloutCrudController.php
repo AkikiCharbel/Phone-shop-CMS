@@ -70,15 +70,16 @@ class SelloutCrudController extends CrudController
                         'type' => 'select2',
                         'name' => 'phone_id', // the db column for the foreign key
 
-                        'entity' => 'phones', // the method that defines the relationship in your Model
+                        'entity' => 'availablePhones', // the method that defines the relationship in your Model
                         'model' => "App\Models\Phone", // foreign key model
                         'attribute' => 'phone_info', // foreign key attribute that is shown to user
 
                         'wrapper' => ['class' => 'form-group col-md-9'],
 
-                         'options'   => (function ($query) {
-                              return $query->where('item_sellout_price', null)->get();
-                         }), // force the related options to be a custom query, instead of all(); you can use this to filter the results show in the select
+//                         'options'   => (function ($query) {
+////                             dd($query->get()->where('item_sellout_price', ));
+//                              return $query->where('item_sellout_price', null)->get();
+//                         }), // force the related options to be a custom query, instead of all(); you can use this to filter the results show in the select
                     ],
                     [
                         'name' => 'price_sold',
