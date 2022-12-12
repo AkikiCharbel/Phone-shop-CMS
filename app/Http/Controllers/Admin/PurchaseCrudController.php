@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Requests\PurchaseRequest;
 use App\Models\Phone;
+use App\Models\Purchase;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Http\Controllers\Operations\CreateOperation;
 use Backpack\CRUD\app\Http\Controllers\Operations\DeleteOperation;
@@ -89,13 +90,6 @@ class PurchaseCrudController extends CrudController
                         'prefix' => '$',
                     ],
                     [
-                        'name' => 'item_sellout_price',
-                        'type' => 'number',
-                        'label' => 'Item Sellout Price',
-                        'prefix' => '$',
-                        'wrapper' => ['class' => 'form-group col-md-2'],
-                    ],
-                    [
                         'name' => 'rom_size',
                         'type' => 'number',
                         'label' => 'ROM size',
@@ -171,5 +165,24 @@ class PurchaseCrudController extends CrudController
         $this->crud->entry->phones()->whereNotIn('id', $stayingIds)->delete();
 
         return $response;
+    }
+
+    public function destroy($id)
+    {
+        $this->crud->hasAccessOrFail('delete');
+
+        // get entry ID from Request (makes sure its the last ID for nested resources)
+        $id = $this->crud->getCurrentEntryId() ?? $id;
+
+        $purchase = Purchase::find($id);
+        $soldPhoneExists = $purchase->phones()->where(function ($query){
+            $query->where('item_sellout_price', '!=', null)
+                ->orWhere('item_sellout_price', '!=', 0);
+        })->exists();
+        if ($soldPhoneExists){
+            return response()->json(['message' => 'You cannot delete a Purchase with a sold phone in it!'], 403);
+        }
+
+        return $this->crud->delete($id);
     }
 }

@@ -164,4 +164,16 @@ class SelloutCrudController extends CrudController
 
         return $response;
     }
+
+    public function destroy($id)
+    {
+        $this->crud->hasAccessOrFail('delete');
+
+        $id = $this->crud->getCurrentEntryId() ?? $id;
+
+        $sellout = Sellout::find($id);
+        $sellout->phones()->update(['item_sellout_price' => null]);
+        $sellout->phones()->detach();
+        return $this->crud->delete($id);
+    }
 }

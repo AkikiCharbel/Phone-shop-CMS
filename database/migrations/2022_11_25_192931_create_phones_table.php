@@ -17,7 +17,7 @@ class CreatePhonesTable extends Migration
 
         Schema::create('phones', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('purchase_id')->constrained();
+            $table->foreignId('purchase_id')->constrained()->cascadeOnDelete();
             $table->foreignId('brand_model_id')->constrained();
             $table->float('item_cost', 8, 2);
             $table->string('imei_1');
