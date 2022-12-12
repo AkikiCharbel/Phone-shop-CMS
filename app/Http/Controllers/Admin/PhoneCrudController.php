@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Requests\PhoneRequest;
 use App\Models\Phone;
-use App\Models\Purchase;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Http\Controllers\Operations\CreateOperation;
 use Backpack\CRUD\app\Http\Controllers\Operations\DeleteOperation;
@@ -24,7 +23,6 @@ class PhoneCrudController extends CrudController
     use ShowOperation;
     use BulkDeleteOperation;
     use MinorUpdateOperation;
-
 
     public function setup()
     {
@@ -53,7 +51,6 @@ class PhoneCrudController extends CrudController
         CRUD::column('description');
         CRUD::column('item_sellout_price');
         CRUD::column('is_new');
-
     }
 
     protected function setupCreateOperation()
@@ -85,7 +82,6 @@ class PhoneCrudController extends CrudController
             'class' => 'form-group col-md-6 align-self-center',
         ]);
         CRUD::field('description')->type('textarea');
-
     }
 
     protected function setupUpdateOperation()
@@ -100,7 +96,7 @@ class PhoneCrudController extends CrudController
 
         $phone = Phone::find($id);
 
-        if ($phone->item_sellout_price != null || $phone->item_sellout_price != 0){
+        if ($phone->item_sellout_price != null || $phone->item_sellout_price != 0) {
             return response()->json(['message' => 'You cannot delete a sold phone!'], 403);
         }
 

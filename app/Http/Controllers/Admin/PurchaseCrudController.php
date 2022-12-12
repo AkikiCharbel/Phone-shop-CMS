@@ -175,11 +175,11 @@ class PurchaseCrudController extends CrudController
         $id = $this->crud->getCurrentEntryId() ?? $id;
 
         $purchase = Purchase::find($id);
-        $soldPhoneExists = $purchase->phones()->where(function ($query){
+        $soldPhoneExists = $purchase->phones()->where(function ($query) {
             $query->where('item_sellout_price', '!=', null)
                 ->orWhere('item_sellout_price', '!=', 0);
         })->exists();
-        if ($soldPhoneExists){
+        if ($soldPhoneExists) {
             return response()->json(['message' => 'You cannot delete a Purchase with a sold phone in it!'], 403);
         }
 

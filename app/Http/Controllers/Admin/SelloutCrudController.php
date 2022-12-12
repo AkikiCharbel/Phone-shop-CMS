@@ -155,7 +155,7 @@ class SelloutCrudController extends CrudController
         }
 
         $diff = $this->crud->entry->phones->pluck('id')->diff(collect($phoneIds));
-        foreach ($diff as $removedPhoneId){
+        foreach ($diff as $removedPhoneId) {
             $phone = Phone::find($removedPhoneId);
             $phone->item_sellout_price = null;
             $phone->save();
@@ -174,6 +174,7 @@ class SelloutCrudController extends CrudController
         $sellout = Sellout::find($id);
         $sellout->phones()->update(['item_sellout_price' => null]);
         $sellout->phones()->detach();
+
         return $this->crud->delete($id);
     }
 }
