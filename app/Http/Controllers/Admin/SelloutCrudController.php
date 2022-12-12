@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Requests\SelloutRequest;
 use App\Models\Phone;
+use App\Models\Sellout;
 use App\Models\User;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Http\Controllers\Operations\CreateOperation;
@@ -67,19 +68,18 @@ class SelloutCrudController extends CrudController
                 'subfields' => [
                     [
                         'label' => 'Phone',
-                        'type' => 'select2',
-                        'name' => 'phone_id', // the db column for the foreign key
+                        'type' => 'select2_from_ajax',
+                        'name' => 'phone_id',
+                        'entity' => 'availablePhones',
+                        'attribute' => 'phone_info',
+                        'data_source' => url('api/admin/available-phones'), // url to controller search function (with /{id} should return model)
 
-                        'entity' => 'availablePhones', // the method that defines the relationship in your Model
-                        'model' => "App\Models\Phone", // foreign key model
-                        'attribute' => 'phone_info', // foreign key attribute that is shown to user
-
-                        'wrapper' => ['class' => 'form-group col-md-9'],
-
-//                         'options'   => (function ($query) {
-////                             dd($query->get()->where('item_sellout_price', ));
-//                              return $query->where('item_sellout_price', null)->get();
-//                         }), // force the related options to be a custom query, instead of all(); you can use this to filter the results show in the select
+                        'placeholder' => 'Select a phone',
+                        'minimum_input_length' => 0,
+                        'model' => "App\Models\Phone",
+                        // 'dependencies'            => ['category'], // when a dependency changes, this select2 is reset to null
+                        'method' => 'POST',
+                        'include_all_form_fields' => true, // optional - only send the current field through AJAX (for a smaller payload if you're not using multiple chained select2s)
                     ],
                     [
                         'name' => 'price_sold',
@@ -87,6 +87,10 @@ class SelloutCrudController extends CrudController
                         'label' => 'Price Sold',
                         'wrapper' => ['class' => 'form-group col-md-3'],
                         'prefix' => '$',
+                    ],
+                    [
+                        'name' => 'soled_phone_id',
+                        'type' => 'hidden',
                     ],
                 ],
 
@@ -140,6 +144,24 @@ class SelloutCrudController extends CrudController
 
     public function update()
     {
-        return redirect(route('sellout.index'));
+        $response = $this->traitUpdate();
+        $phoneIds = [];
+        foreach (request()->get('soled_phones') as $phoneObj) {
+            $phone = Phone::find($phoneObj['phone_id']);
+            $phone->item_sellout_price = $phoneObj['price_sold'];
+            $phone->save();
+            $phoneIds[] = $phone->id;
+            $this->crud->entry->phones()->syncWithoutDetaching($phone->id);
+        }
+
+        $diff = $this->crud->entry->phones->pluck('id')->diff(collect($phoneIds));
+        foreach ($diff as $removedPhoneId){
+            $phone = Phone::find($removedPhoneId);
+            $phone->item_sellout_price = null;
+            $phone->save();
+            $this->crud->entry->phones()->detach($removedPhoneId);
+        }
+
+        return $response;
     }
 }

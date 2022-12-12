@@ -43,7 +43,7 @@ class Sellout extends Model
     public function availablePhones(): MorphToMany
     {
         return $this->morphedByMany(Phone::class, 'sellable')
-            ->where('item_sellout_price',  null)
+            ->where('item_sellout_price', '==', null)
             ->withTimestamps();
     }
 
@@ -62,6 +62,7 @@ class Sellout extends Model
                     $phones[] = [
                         'phone_id' => $phone->id,
                         'price_sold' => $phone->item_sellout_price,
+                        'soled_phone_id' => $phone->id,
                     ];
                 }
 

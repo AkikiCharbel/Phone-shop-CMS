@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Backpack\CRUD\app\Models\Traits\CrudTrait;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -9,7 +11,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class BrandModel extends Model
 {
-    use \Backpack\CRUD\app\Models\Traits\CrudTrait;
+    use CrudTrait;
     use HasFactory;
 
     /**
@@ -41,9 +43,13 @@ class BrandModel extends Model
         return $this->belongsTo(Brand::class);
     }
 
-    public function getFullNameAttribute(): string
+    public function fullName(): Attribute
     {
-        return $this->brand->name.' - '.$this->name;
+        return Attribute::make(
+            get: function ($value) {
+                return $this->brand?->name.' - '.$this?->name;
+            },
+        );
     }
 
     public function phones(): HasMany
