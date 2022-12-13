@@ -75,12 +75,28 @@ class PhoneCrudController extends CrudController
     {
         CRUD::setValidation(PhoneRequest::class);
 
-        CRUD::field('brandModel')->wrapper([
-            'class' => 'form-group col-md-6',
+        $this->crud->addField([  // Select2
+            'label' => 'Brand - Model',
+            'type' => 'select2',
+            'name' => 'brand_model_id', // the db column for the foreign key
+
+            // optional
+            'entity' => 'brandModel', // the method that defines the relationship in your Model
+            'model' => "App\Models\BrandModel", // foreign key model
+            'attribute' => 'full_name', // foreign key attribute that is shown to user
+
+            'wrapper' => ['class' => 'form-group col-md-6'],
+            // also optional
+            //                        'options'   => (function ($query) {
+            //                            return $query->orderBy('name', 'ASC')->where('depth', 1)->get();
+            //                        }), // force the related options to be a custom query, instead of all(); you can use this to filter the results show in the select
         ]);
+//        CRUD::field('brandModel')->wrapper([
+//            'class' => 'form-group col-md-6',
+//        ]);
         CRUD::field('item_cost')->wrapper([
             'class' => 'form-group col-md-6',
-        ]);
+        ])->type('number')->attributes(['step' => 'any']);
         CRUD::field('imei_1')->wrapper([
             'class' => 'form-group col-md-6',
         ]);

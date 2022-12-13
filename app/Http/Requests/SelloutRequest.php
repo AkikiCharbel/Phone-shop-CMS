@@ -27,6 +27,8 @@ class SelloutRequest extends FormRequest
         return [
             'customer_id' => 'required|integer|exists:users,id',
             'amount' => 'required|numeric|between:0,99999999',
+            'soled_phones.*.phone_id' => 'required',
+            'soled_phones.*.price_sold' => 'required',
         ];
     }
 
