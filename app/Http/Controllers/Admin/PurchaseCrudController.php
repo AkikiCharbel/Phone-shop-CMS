@@ -48,6 +48,8 @@ class PurchaseCrudController extends CrudController
 
     protected function setupListOperation(): void
     {
+        $this->crud->addButtonFromView('top', 'create_phone', 'create_phone', 'end');
+
         CRUD::column('date');
         CRUD::column('shipping_source');
         CRUD::column('shipping_date');

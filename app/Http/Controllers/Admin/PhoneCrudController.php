@@ -49,6 +49,8 @@ class PhoneCrudController extends CrudController
 
     protected function setupListOperation()
     {
+        $this->crud->removeButton('create');
+
         $this->crud->addColumn([
             // any type of relationship
             'name' => 'brand_model_id', // name of relationship method in the model
