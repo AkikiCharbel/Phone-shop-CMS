@@ -28,6 +28,22 @@ class PurchaseCrudController extends CrudController
         CRUD::setRoute(config('backpack.base.route_prefix').'/purchase');
         CRUD::setEntityNameStrings('purchase', 'purchases');
         $this->crud->addButtonFromView('top', 'import_excel', 'import_excel', 'beginning');
+
+        if (! backpack_user()->can('purchase.view')) {
+            CRUD::denyAccess(['show']);
+        }
+        if (! backpack_user()->can('purchase.create')) {
+            CRUD::denyAccess(['create']);
+        }
+        if (! backpack_user()->can('purchase.list')) {
+            CRUD::denyAccess(['list']);
+        }
+        if (! backpack_user()->can('purchase.update')) {
+            CRUD::denyAccess(['update']);
+        }
+        if (! backpack_user()->can('purchase.delete')) {
+            CRUD::denyAccess(['delete']);
+        }
     }
 
     protected function setupListOperation(): void

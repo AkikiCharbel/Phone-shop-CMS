@@ -29,6 +29,22 @@ class PhoneCrudController extends CrudController
         CRUD::setModel(\App\Models\Phone::class);
         CRUD::setRoute(config('backpack.base.route_prefix').'/phone');
         CRUD::setEntityNameStrings('phone', 'phones');
+
+        if (! backpack_user()->can('phone.view')) {
+            CRUD::denyAccess(['show']);
+        }
+        if (! backpack_user()->can('phone.create')) {
+            CRUD::denyAccess(['create']);
+        }
+        if (! backpack_user()->can('phone.list')) {
+            CRUD::denyAccess(['list']);
+        }
+        if (! backpack_user()->can('phone.update')) {
+            CRUD::denyAccess(['update']);
+        }
+        if (! backpack_user()->can('phone.delete')) {
+            CRUD::denyAccess(['delete']);
+        }
     }
 
     protected function setupListOperation()

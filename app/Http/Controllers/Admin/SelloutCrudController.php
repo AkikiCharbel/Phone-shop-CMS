@@ -33,6 +33,22 @@ class SelloutCrudController extends CrudController
         CRUD::setModel(\App\Models\Sellout::class);
         CRUD::setRoute(config('backpack.base.route_prefix').'/sellout');
         CRUD::setEntityNameStrings('sellout', 'sellouts');
+
+        if (! backpack_user()->can('sellout.view')) {
+            CRUD::denyAccess(['show']);
+        }
+        if (! backpack_user()->can('sellout.create')) {
+            CRUD::denyAccess(['create']);
+        }
+        if (! backpack_user()->can('sellout.list')) {
+            CRUD::denyAccess(['list']);
+        }
+        if (! backpack_user()->can('sellout.update')) {
+            CRUD::denyAccess(['update']);
+        }
+        if (! backpack_user()->can('sellout.delete')) {
+            CRUD::denyAccess(['delete']);
+        }
     }
 
     protected function setupListOperation(): void

@@ -18,7 +18,6 @@
         "psr/simple-cache": "^2.0"
     },
     "require-dev": {
-        "backpack/devtools": "^1.2",
         "backpack/generators": "^3.3",
         "fakerphp/faker": "^1.9.1",
         "laravel/pint": "^1.2",

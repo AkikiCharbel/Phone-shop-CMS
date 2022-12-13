@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use Backpack\PermissionManager\app\Http\Controllers\RoleCrudController;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -26,6 +27,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        $this->app->bind(
+            RoleCrudController::class, //this is package controller
+            \App\Http\Controllers\Admin\PermissionManager\RoleCrudController::class //this should be your own controller
+        );
     }
 }
