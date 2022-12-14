@@ -25,7 +25,13 @@ class PhoneRequest extends FormRequest
     public function rules()
     {
         return [
-            // 'name' => 'required|min:5|max:255'
+            'brand_model_id' => 'required',
+            'item_cost' => 'required|numeric|min:0',
+            'imei_1' => 'required',
+            'imei_2' => 'required',
+            'rom_size' => 'required',
+            'color' => 'required',
+            'description' => 'nullable|string',
         ];
     }
 

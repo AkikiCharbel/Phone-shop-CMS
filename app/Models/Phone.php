@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Backpack\CRUD\app\Models\Traits\CrudTrait;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -52,6 +53,10 @@ class Phone extends Model
         'is_new' => 'boolean',
     ];
 
+    protected $appends = [
+        'phone_info',
+    ];
+
     public function purchase(): BelongsTo
     {
         return $this->belongsTo(Purchase::class);
@@ -68,12 +73,16 @@ class Phone extends Model
             ->withTimestamps();
     }
 
-    public function getPhoneInfoAttribute(): string
+    public function phoneInfo(): Attribute
     {
-        return $this->imei_1.' / '
-            .$this->imei_2.' / '
-            .$this->brandModel->full_name.' / '
-            .$this->rom_size.' / '
-            .$this->color;
+        return Attribute::make(
+            get: function () {
+                return $this->brandModel?->full_name.' / '
+                    .$this?->imei_1.' / '
+                    .$this?->imei_2.' / '
+                    .$this?->rom_size.' / '
+                    .$this?->color;
+            }
+        );
     }
 }

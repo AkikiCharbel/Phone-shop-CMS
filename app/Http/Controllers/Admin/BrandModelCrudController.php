@@ -38,6 +38,21 @@ class BrandModelCrudController extends CrudController
         CRUD::setModel(\App\Models\BrandModel::class);
         CRUD::setRoute(config('backpack.base.route_prefix').'/brand-model');
         CRUD::setEntityNameStrings('brand model', 'brand models');
+        if (! backpack_user()->can('brand-model.view')) {
+            CRUD::denyAccess(['show']);
+        }
+        if (! backpack_user()->can('brand-model.create')) {
+            CRUD::denyAccess(['create']);
+        }
+        if (! backpack_user()->can('brand-model.list')) {
+            CRUD::denyAccess(['list']);
+        }
+        if (! backpack_user()->can('brand-model.update')) {
+            CRUD::denyAccess(['update']);
+        }
+        if (! backpack_user()->can('brand-model.delete')) {
+            CRUD::denyAccess(['delete']);
+        }
     }
 
     /**

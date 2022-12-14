@@ -27,10 +27,30 @@ class CustomerCrudController extends CrudController
         CRUD::setModel(\App\Models\User::class);
         CRUD::setRoute(config('backpack.base.route_prefix').'/customer');
         CRUD::setEntityNameStrings('customer', 'customers');
+        $this->crud->setListView('vendor.backpack.crud.customers-list');
+
+        if (! backpack_user()->can('customer.view')) {
+            CRUD::denyAccess(['show']);
+        }
+        if (! backpack_user()->can('customer.create')) {
+            CRUD::denyAccess(['create']);
+        }
+        if (! backpack_user()->can('customer.list')) {
+            CRUD::denyAccess(['list']);
+        }
+        if (! backpack_user()->can('customer.update')) {
+            CRUD::denyAccess(['update']);
+        }
+        if (! backpack_user()->can('customer.delete')) {
+            CRUD::denyAccess(['delete']);
+        }
     }
 
     protected function setupListOperation(): void
     {
+        $this->crud->addClause('whereHas', 'roles', function ($query) {
+            $query->where('name', 'customer');
+        });
         CRUD::column('name');
         CRUD::column('phone_number');
         CRUD::column('email');

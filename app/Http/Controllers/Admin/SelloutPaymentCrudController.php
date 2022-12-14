@@ -2,27 +2,22 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Requests\BrandRequest;
+use App\Http\Requests\SelloutPaymentRequest;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
-use Backpack\CRUD\app\Http\Controllers\Operations\CreateOperation;
-use Backpack\CRUD\app\Http\Controllers\Operations\DeleteOperation;
-use Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
-use Backpack\CRUD\app\Http\Controllers\Operations\ShowOperation;
-use Backpack\CRUD\app\Http\Controllers\Operations\UpdateOperation;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 
 /**
- * Class BrandCrudController
+ * Class SelloutPaymentCrudController
  *
  * @property-read \Backpack\CRUD\app\Library\CrudPanel\CrudPanel $crud
  */
-class BrandCrudController extends CrudController
+class SelloutPaymentCrudController extends CrudController
 {
-    use ListOperation;
-    use CreateOperation;
-    use UpdateOperation;
-    use DeleteOperation;
-    use ShowOperation;
+    use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
+    use \Backpack\CRUD\app\Http\Controllers\Operations\CreateOperation;
+    use \Backpack\CRUD\app\Http\Controllers\Operations\UpdateOperation;
+    use \Backpack\CRUD\app\Http\Controllers\Operations\DeleteOperation;
+    use \Backpack\CRUD\app\Http\Controllers\Operations\ShowOperation;
 
     /**
      * Configure the CrudPanel object. Apply settings to all operations.
@@ -31,24 +26,9 @@ class BrandCrudController extends CrudController
      */
     public function setup()
     {
-        CRUD::setModel(\App\Models\Brand::class);
-        CRUD::setRoute(config('backpack.base.route_prefix').'/brand');
-        CRUD::setEntityNameStrings('brand', 'brands');
-        if (! backpack_user()->can('brand.view')) {
-            CRUD::denyAccess(['show']);
-        }
-        if (! backpack_user()->can('brand.create')) {
-            CRUD::denyAccess(['create']);
-        }
-        if (! backpack_user()->can('brand.list')) {
-            CRUD::denyAccess(['list']);
-        }
-        if (! backpack_user()->can('brand.update')) {
-            CRUD::denyAccess(['update']);
-        }
-        if (! backpack_user()->can('brand.delete')) {
-            CRUD::denyAccess(['delete']);
-        }
+        CRUD::setModel(\App\Models\SelloutPayment::class);
+        CRUD::setRoute(config('backpack.base.route_prefix').'/sellout-payment');
+        CRUD::setEntityNameStrings('sellout payment', 'sellout payments');
     }
 
     /**
@@ -60,8 +40,6 @@ class BrandCrudController extends CrudController
      */
     protected function setupListOperation()
     {
-        CRUD::column('name');
-
         /**
          * Columns can be defined using the fluent syntax or array syntax:
          * - CRUD::column('price')->type('number');
@@ -78,9 +56,7 @@ class BrandCrudController extends CrudController
      */
     protected function setupCreateOperation()
     {
-        CRUD::setValidation(BrandRequest::class);
-
-        CRUD::field('name');
+        CRUD::setValidation(SelloutPaymentRequest::class);
 
         /**
          * Fields can be defined using the fluent syntax or array syntax:

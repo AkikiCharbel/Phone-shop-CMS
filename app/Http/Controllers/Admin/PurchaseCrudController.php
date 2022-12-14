@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Requests\PurchaseRequest;
 use App\Models\Phone;
+use App\Models\Purchase;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Http\Controllers\Operations\CreateOperation;
 use Backpack\CRUD\app\Http\Controllers\Operations\DeleteOperation;
@@ -27,10 +28,28 @@ class PurchaseCrudController extends CrudController
         CRUD::setRoute(config('backpack.base.route_prefix').'/purchase');
         CRUD::setEntityNameStrings('purchase', 'purchases');
         $this->crud->addButtonFromView('top', 'import_excel', 'import_excel', 'beginning');
+
+        if (! backpack_user()->can('purchase.view')) {
+            CRUD::denyAccess(['show']);
+        }
+        if (! backpack_user()->can('purchase.create')) {
+            CRUD::denyAccess(['create']);
+        }
+        if (! backpack_user()->can('purchase.list')) {
+            CRUD::denyAccess(['list']);
+        }
+        if (! backpack_user()->can('purchase.update')) {
+            CRUD::denyAccess(['update']);
+        }
+        if (! backpack_user()->can('purchase.delete')) {
+            CRUD::denyAccess(['delete']);
+        }
     }
 
     protected function setupListOperation(): void
     {
+        $this->crud->addButtonFromView('top', 'create_phone', 'create_phone', 'end');
+
         CRUD::column('date');
         CRUD::column('shipping_source');
         CRUD::column('shipping_date');
@@ -87,13 +106,6 @@ class PurchaseCrudController extends CrudController
                             'min' => 0,
                         ],
                         'prefix' => '$',
-                    ],
-                    [
-                        'name' => 'item_sellout_price',
-                        'type' => 'number',
-                        'label' => 'Item Sellout Price',
-                        'prefix' => '$',
-                        'wrapper' => ['class' => 'form-group col-md-2'],
                     ],
                     [
                         'name' => 'rom_size',
@@ -171,5 +183,24 @@ class PurchaseCrudController extends CrudController
         $this->crud->entry->phones()->whereNotIn('id', $stayingIds)->delete();
 
         return $response;
+    }
+
+    public function destroy($id)
+    {
+        $this->crud->hasAccessOrFail('delete');
+
+        // get entry ID from Request (makes sure its the last ID for nested resources)
+        $id = $this->crud->getCurrentEntryId() ?? $id;
+
+        $purchase = Purchase::find($id);
+        $soldPhoneExists = $purchase->phones()->where(function ($query) {
+            $query->where('item_sellout_price', '!=', null)
+                ->orWhere('item_sellout_price', '!=', 0);
+        })->exists();
+        if ($soldPhoneExists) {
+            return response()->json(['message' => 'You cannot delete a Purchase with a sold phone in it!'], 403);
+        }
+
+        return $this->crud->delete($id);
     }
 }

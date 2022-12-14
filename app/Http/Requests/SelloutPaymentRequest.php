@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class PurchaseRequest extends FormRequest
+class SelloutPaymentRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,16 +25,7 @@ class PurchaseRequest extends FormRequest
     public function rules()
     {
         return [
-            'date' => 'required|date',
-            'shipping_source' => 'required|string',
-            'shipping_date' => 'required|date',
-            'phone_list.*.brand_model_id' => 'required',
-            'phone_list.*.imei_1' => 'required',
-            'phone_list.*.imei_2' => 'required',
-            'phone_list.*.item_cost' => 'required|numeric',
-            'phone_list.*.rom_size' => 'required',
-            'phone_list.*.color' => 'required',
-            'phone_list.*.description' => 'nullable|string',
+            // 'name' => 'required|min:5|max:255'
         ];
     }
 
