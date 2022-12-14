@@ -80,9 +80,7 @@ class Sellout extends Model
     protected function selloutPaymentsList(): Attribute
     {
         return Attribute::make(
-            get: function () {
-                return $this->selloutPayments->toArray();
-            }
+            get: fn ($value) => $this->selloutPayments->toArray(),
         );
     }
 }

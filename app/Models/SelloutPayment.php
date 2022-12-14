@@ -17,6 +17,7 @@ class SelloutPayment extends Model
     */
 
     protected $table = 'sellout_payments';
+
     // protected $primaryKey = 'id';
     // public $timestamps = false;
     protected $guarded = ['id'];

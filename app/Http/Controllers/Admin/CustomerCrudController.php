@@ -27,6 +27,8 @@ class CustomerCrudController extends CrudController
         CRUD::setModel(\App\Models\User::class);
         CRUD::setRoute(config('backpack.base.route_prefix').'/customer');
         CRUD::setEntityNameStrings('customer', 'customers');
+        $this->crud->setListView('vendor.backpack.crud.customers-list');
+
         if (! backpack_user()->can('customer.view')) {
             CRUD::denyAccess(['show']);
         }
@@ -46,6 +48,9 @@ class CustomerCrudController extends CrudController
 
     protected function setupListOperation(): void
     {
+        $this->crud->addClause('whereHas', 'roles', function ($query) {
+            $query->where('name', 'customer');
+        });
         CRUD::column('name');
         CRUD::column('phone_number');
         CRUD::column('email');
