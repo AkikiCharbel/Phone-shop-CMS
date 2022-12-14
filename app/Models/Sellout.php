@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
 class Sellout extends Model
@@ -53,6 +54,11 @@ class Sellout extends Model
             ->withTimestamps();
     }
 
+    public function selloutPayments(): HasMany
+    {
+        return $this->hasMany(SelloutPayment::class);
+    }
+
     protected function soledPhones(): Attribute
     {
         return Attribute::make(
@@ -67,6 +73,15 @@ class Sellout extends Model
                 }
 
                 return $phones;
+            }
+        );
+    }
+
+    protected function selloutPaymentsList(): Attribute
+    {
+        return Attribute::make(
+            get: function () {
+                return $this->selloutPayments->toArray();
             }
         );
     }

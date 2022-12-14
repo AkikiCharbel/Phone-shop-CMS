@@ -96,6 +96,7 @@ class SelloutCrudController extends CrudController
                         // 'dependencies'            => ['category'], // when a dependency changes, this select2 is reset to null
                         'method' => 'POST',
                         'include_all_form_fields' => true, // optional - only send the current field through AJAX (for a smaller payload if you're not using multiple chained select2s)
+                        'wrapper' => ['class' => 'form-group col-md-9'],
                     ],
                     [
                         'name' => 'price_sold',
@@ -117,6 +118,21 @@ class SelloutCrudController extends CrudController
                 'name' => 'amount',
                 'type' => 'number',
                 'label' => 'Amount',
+                'wrapper' => ['class' => 'form-group col-md-6'],
+                'prefix' => '$',
+            ],
+            [
+                'name'          => 'selloutPayments',
+                'type'          => "relationship",
+                'wrapper' => ['class' => 'form-group col-md-6'],
+                'subfields'   => [
+                    [
+                        'name' => 'amount',
+                        'label' => 'amount',
+                        'type' => 'number',
+                        'prefix' => '$'
+                    ],
+                ],
             ],
         ]);
     }

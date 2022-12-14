@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class SelloutRequest extends FormRequest
+class SelloutPaymentRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,11 +25,7 @@ class SelloutRequest extends FormRequest
     public function rules()
     {
         return [
-            'customer_id' => 'required|integer|exists:users,id',
-            'amount' => 'required|numeric|between:0,99999999',
-            'soled_phones.*.phone_id' => 'required',
-            'soled_phones.*.price_sold' => 'required',
-            'selloutPayments.*.amount' => 'required',
+            // 'name' => 'required|min:5|max:255'
         ];
     }
 
