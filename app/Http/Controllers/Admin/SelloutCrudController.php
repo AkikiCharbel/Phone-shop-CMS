@@ -102,7 +102,12 @@ class SelloutCrudController extends CrudController
                         'name' => 'price_sold',
                         'type' => 'number',
                         'label' => 'Price Sold',
-                        'wrapper' => ['class' => 'form-group col-md-3'],
+                        'wrapper' => [
+                            'class' => 'form-group col-md-3',
+                        ],
+                        'attributes' => [
+                            'onchange' => 'getTotalPrice()',
+                        ],
                         'prefix' => '$',
                     ],
                     [
@@ -131,9 +136,22 @@ class SelloutCrudController extends CrudController
                         'label' => 'amount',
                         'type' => 'number',
                         'prefix' => '$',
+                        'attributes' => [
+                            'onchange' => 'getMoneyLeft()',
+                        ],
                     ],
                 ],
             ],
+            [
+                'name' => 'amount_left',
+                'label' => 'Money Left',
+                'type' => 'number',
+                'wrapper' => [
+                    'class' => 'form-group col-md-6',
+                    'disabled' => 'disabled',
+                    'step' => 'any',
+                ]
+            ]
         ]);
     }
 
