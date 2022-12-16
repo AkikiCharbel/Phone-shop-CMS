@@ -47,23 +47,23 @@ class PhoneCrudController extends CrudController
             CRUD::denyAccess(['delete']);
         }
 
-        Widget::add()
-            ->to('before_content')
-            ->type('card')
-            ->content(null);
-        Widget::add([
-            'type'       => 'chart',
-            'controller' => \App\Http\Controllers\Admin\Charts\WeeklyBuyersChartController::class,
-
-            // OPTIONALS
-
-            // 'class'   => 'card mb-2',
-             'wrapper' => ['class'=> 'col-md-12'] ,
-            // 'content' => [
-            // 'header' => 'New Users',
-            // 'body'   => 'This chart should make it obvious how many new users have signed up in the past 7 days.<br><br>',
-            // ],
-        ]);
+//        Widget::add()
+//            ->to('before_content')
+//            ->type('card')
+//            ->content(null);
+//        Widget::add([
+//            'type'       => 'chart',
+//            'controller' => \App\Http\Controllers\Admin\Charts\WeeklyBuyersChartController::class,
+//
+//            // OPTIONALS
+//
+//            // 'class'   => 'card mb-2',
+//             'wrapper' => ['class'=> 'col-md-12'] ,
+//            // 'content' => [
+//            // 'header' => 'New Users',
+//            // 'body'   => 'This chart should make it obvious how many new users have signed up in the past 7 days.<br><br>',
+//            // ],
+//        ]);
 
     }
 
