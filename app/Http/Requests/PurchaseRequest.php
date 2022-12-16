@@ -30,7 +30,7 @@ class PurchaseRequest extends FormRequest
             'shipping_date' => 'required|date',
             'phone_list.*.brand_model_id' => 'required',
             'phone_list.*.imei_1' => 'required',
-            'phone_list.*.imei_2' => 'required',
+//            'phone_list.*.imei_2' => 'required',
             'phone_list.*.item_cost' => 'required|numeric',
             'phone_list.*.rom_size' => 'required',
             'phone_list.*.color' => 'required',

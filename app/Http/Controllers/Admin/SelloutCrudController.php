@@ -128,6 +128,7 @@ class SelloutCrudController extends CrudController
             ],
             [
                 'name' => 'selloutPayments',
+                'label' => 'sellout Payments',
                 'type' => 'relationship',
                 'wrapper' => ['class' => 'form-group col-md-6'],
                 'subfields' => [
