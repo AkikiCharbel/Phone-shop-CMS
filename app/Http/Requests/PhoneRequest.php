@@ -28,7 +28,7 @@ class PhoneRequest extends FormRequest
             'brand_model_id' => 'required',
             'item_cost' => 'required|numeric|min:0',
             'imei_1' => 'required',
-            'imei_2' => 'required',
+//            'imei_2' => 'required',
             'rom_size' => 'required',
             'color' => 'required',
             'description' => 'nullable|string',

@@ -17,7 +17,7 @@ class CreateBrandModelsTable extends Migration
 
         Schema::create('brand_models', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('brand_id')->constrained();
+            $table->foreignId('brand_id')->nullable()->constrained()->nullOnDelete();
             $table->string('name');
             $table->timestamps();
         });

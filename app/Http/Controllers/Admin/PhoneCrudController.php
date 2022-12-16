@@ -11,6 +11,7 @@ use Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
 use Backpack\CRUD\app\Http\Controllers\Operations\ShowOperation;
 use Backpack\CRUD\app\Http\Controllers\Operations\UpdateOperation;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
+use Backpack\CRUD\app\Library\Widget;
 use Backpack\EditableColumns\Http\Controllers\Operations\MinorUpdateOperation;
 use Backpack\Pro\Http\Controllers\Operations\BulkDeleteOperation;
 
@@ -45,6 +46,25 @@ class PhoneCrudController extends CrudController
         if (! backpack_user()->can('phone.delete')) {
             CRUD::denyAccess(['delete']);
         }
+
+        Widget::add()
+            ->to('before_content')
+            ->type('card')
+            ->content(null);
+        Widget::add([
+            'type'       => 'chart',
+            'controller' => \App\Http\Controllers\Admin\Charts\WeeklyBuyersChartController::class,
+
+            // OPTIONALS
+
+            // 'class'   => 'card mb-2',
+             'wrapper' => ['class'=> 'col-md-12'] ,
+            // 'content' => [
+            // 'header' => 'New Users',
+            // 'body'   => 'This chart should make it obvious how many new users have signed up in the past 7 days.<br><br>',
+            // ],
+        ]);
+
     }
 
     protected function setupListOperation()
@@ -60,6 +80,13 @@ class PhoneCrudController extends CrudController
             'entity' => 'brandModel', // the method that defines the relationship in your Model
             'attribute' => 'full_name', // foreign key attribute that is shown to user
             'model' => 'App\Models\BrandModel::class', // foreign key model
+            'searchLogic' => function ($query, $column, $searchTerm) {
+                $query->orWhereHas('brandModel', function ($q) use ($column, $searchTerm) {
+                    $q->where('name', 'like', '%'.$searchTerm.'%');
+                })->orWhereHas('brandModel.brand', function ($q) use ($column, $searchTerm){
+                    $q->where('name',  'like', '%'. $searchTerm .'%');
+                });
+            }
         ]);
         CRUD::column('item_cost');
         CRUD::column('imei_1');

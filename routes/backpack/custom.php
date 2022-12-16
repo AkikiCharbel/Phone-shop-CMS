@@ -23,4 +23,5 @@ Route::crud('brand', 'BrandCrudController');
     Route::crud('sellout', 'SelloutCrudController');
     Route::crud('customer', 'CustomerCrudController');
 //    Route::crud('sellout-payment', 'SelloutPaymentCrudController');
+    Route::get('charts/weekly-buyers', 'Charts\WeeklyBuyersChartController@response')->name('charts.weekly-buyers.index');
 }); // this should be the absolute last line of this file
