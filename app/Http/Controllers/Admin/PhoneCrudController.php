@@ -46,6 +46,22 @@ class PhoneCrudController extends CrudController
         if (! backpack_user()->can('phone.delete')) {
             CRUD::denyAccess(['delete']);
         }
+    }
+
+    protected function setupListOperation()
+    {
+
+        $this->crud->addFilter([
+            'type'  => 'date_range',
+            'name'  => 'from_to',
+            'label' => 'Date range'
+        ],
+            false,
+            function ($value) { // if the filter is active, apply these constraints
+                 $dates = json_decode($value);
+                 $this->crud->addClause('where', 'created_at', '>=', $dates->from);
+                 $this->crud->addClause('where', 'created_at', '<=', $dates->to . ' 23:59:59');
+            });
 
 //        Widget::add()
 //            ->to('before_content')
@@ -58,17 +74,12 @@ class PhoneCrudController extends CrudController
 //            // OPTIONALS
 //
 //            // 'class'   => 'card mb-2',
-//             'wrapper' => ['class'=> 'col-md-12'] ,
+//            'wrapper' => ['class'=> 'col-md-12'] ,
 //            // 'content' => [
 //            // 'header' => 'New Users',
 //            // 'body'   => 'This chart should make it obvious how many new users have signed up in the past 7 days.<br><br>',
 //            // ],
 //        ]);
-
-    }
-
-    protected function setupListOperation()
-    {
         $this->crud->removeButton('create');
 
         $this->crud->addColumn([
