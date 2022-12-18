@@ -56,4 +56,21 @@ class User extends Authenticatable
             }
         );
     }
+
+    public function selloutsList(): Attribute
+    {
+        return Attribute::make(
+            get: function () {
+                $sellouts = [];
+                foreach ($this->sellouts as $sellout){
+                    $sellouts[] = [
+                        'amount' => $sellout->amount .' $',
+                        'amount_left' => $sellout->amount - $sellout->selloutPayments()->sum('amount') . ' $',
+                        'link' => '<a href="'.config('app.url').'/admin/sellout/' . $sellout->id . '/edit">Sellout Link</a>',
+                    ];
+                }
+                return $sellouts;
+            }
+        );
+    }
 }
