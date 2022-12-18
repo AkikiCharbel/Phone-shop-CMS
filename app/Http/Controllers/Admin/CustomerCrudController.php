@@ -76,6 +76,16 @@ class CustomerCrudController extends CrudController
         CRUD::column('name');
         CRUD::column('phone_number');
         CRUD::column('email');
+        $this->crud->addColumn([
+            'name' => 'selloutsList',
+            'label' => 'Sellouts',
+            'type' => 'table-accept-html',
+            'columns' => [
+                'amount' => 'Amount To Pay',
+                'amount_left' => 'Amount Left',
+                'link' => 'Link',
+            ],
+        ]);
     }
 
     protected function setupCreateOperation(): void
