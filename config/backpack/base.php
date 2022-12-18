@@ -122,7 +122,7 @@ return [
     'developer_name' => 'Charbel Akiki',
 
     // Developer website. Link in footer. Type false if you want to hide it.
-    'developer_link' => 'mailto:charbelakiki1111@gmail.com',
+    'developer_link' => false,
 
     // Show powered by Laravel Backpack in the footer? true/false
     'show_powered_by' => false,

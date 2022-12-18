@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
 class Sellout extends Model
@@ -41,10 +42,22 @@ class Sellout extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function availablePhones(): MorphToMany
+    {
+        return $this->morphedByMany(Phone::class, 'sellable')
+            ->where('item_sellout_price', '==', null)
+            ->withTimestamps();
+    }
+
     public function phones(): MorphToMany
     {
         return $this->morphedByMany(Phone::class, 'sellable')
             ->withTimestamps();
+    }
+
+    public function selloutPayments(): HasMany
+    {
+        return $this->hasMany(SelloutPayment::class);
     }
 
     protected function soledPhones(): Attribute
@@ -56,6 +69,7 @@ class Sellout extends Model
                     $phones[] = [
                         'phone_id' => $phone->id,
                         'price_sold' => $phone->item_sellout_price,
+                        'soled_phone_id' => $phone->id,
                     ];
                 }
                 return $phones;
@@ -85,6 +99,13 @@ class Sellout extends Model
                 }
                 return $phones;
             }
+        );
+    }
+
+    protected function selloutPaymentsList(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($value) => $this->selloutPayments->toArray(),
         );
     }
 }

@@ -24,6 +24,21 @@ class BrandCrudController extends CrudController
         CRUD::setModel(\App\Models\Brand::class);
         CRUD::setRoute(config('backpack.base.route_prefix').'/brand');
         CRUD::setEntityNameStrings('brand', 'brands');
+        if (! backpack_user()->can('brand.view')) {
+            CRUD::denyAccess(['show']);
+        }
+        if (! backpack_user()->can('brand.create')) {
+            CRUD::denyAccess(['create']);
+        }
+        if (! backpack_user()->can('brand.list')) {
+            CRUD::denyAccess(['list']);
+        }
+        if (! backpack_user()->can('brand.update')) {
+            CRUD::denyAccess(['update']);
+        }
+        if (! backpack_user()->can('brand.delete')) {
+            CRUD::denyAccess(['delete']);
+        }
     }
 
     protected function setupListOperation()

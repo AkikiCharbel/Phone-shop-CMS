@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Backpack\CRUD\app\Models\Traits\CrudTrait;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -13,18 +14,8 @@ class Phone extends Model
     use CrudTrait;
     use HasFactory;
 
-    /**
-     * Indicates if the model should be timestamped.
-     *
-     * @var bool
-     */
-    public $timestamps = false;
+    public $timestamps = true;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
     protected $fillable = [
         'purchase_id',
         'brand_model_id',
@@ -38,11 +29,6 @@ class Phone extends Model
         'is_new',
     ];
 
-    /**
-     * The attributes that should be cast to native types.
-     *
-     * @var array
-     */
     protected $casts = [
         'id' => 'integer',
         'purchase_id' => 'integer',
@@ -50,6 +36,10 @@ class Phone extends Model
         'item_cost' => 'float',
         'item_sellout_price' => 'float',
         'is_new' => 'boolean',
+    ];
+
+    protected $appends = [
+        'phone_info',
     ];
 
     public function purchase(): BelongsTo
@@ -68,12 +58,16 @@ class Phone extends Model
             ->withTimestamps();
     }
 
-    public function getPhoneInfoAttribute(): string
+    public function phoneInfo(): Attribute
     {
-        return $this->imei_1.' / '
-            .$this->imei_2.' / '
-            .$this->brandModel->full_name.' / '
-            .$this->rom_size.' / '
-            .$this->color;
+        return Attribute::make(
+            get: function () {
+                return $this->brandModel?->full_name.' / '
+                    .$this?->imei_1.' / '
+                    .$this?->imei_2.' / '
+                    .$this?->rom_size.' / '
+                    .$this?->color;
+            }
+        );
     }
 }
