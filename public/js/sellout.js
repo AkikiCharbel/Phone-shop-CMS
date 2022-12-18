@@ -1,4 +1,4 @@
-let v = 1.4;
+let v = 1.0;
 
 $(document).ready(function() {
     getMoneyLeft();

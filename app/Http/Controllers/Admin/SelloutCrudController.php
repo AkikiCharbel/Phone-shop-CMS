@@ -14,13 +14,17 @@ use Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
 use Backpack\CRUD\app\Http\Controllers\Operations\ShowOperation;
 use Backpack\CRUD\app\Http\Controllers\Operations\UpdateOperation;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
+use Backpack\CRUD\app\Library\Widget;
 use Backpack\Pro\Http\Controllers\Operations\BulkDeleteOperation;
 use Backpack\Pro\Http\Controllers\Operations\FetchOperation;
+use Carbon\Carbon;
+use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\View\View;
 
 class SelloutCrudController extends CrudController
 {
-    use ListOperation;
+    use ListOperation { index as traitIndex; }
     use CreateOperation { store as traitStore; }
     use UpdateOperation { update as traitUpdate; }
     use DeleteOperation;
@@ -32,6 +36,7 @@ class SelloutCrudController extends CrudController
     {
         CRUD::setModel(\App\Models\Sellout::class);
         CRUD::setRoute(config('backpack.base.route_prefix').'/sellout');
+        $this->crud->setListView('vendor.backpack.crud.customized-list');
         CRUD::setEntityNameStrings('sellout', 'sellouts');
 
         if (! backpack_user()->can('sellout.view')) {
@@ -53,6 +58,17 @@ class SelloutCrudController extends CrudController
 
     protected function setupListOperation(): void
     {
+        $this->crud->addFilter([
+            'type' => 'date_range',
+            'name' => 'from_to',
+            'label' => 'Date range',
+        ],
+            false,
+            function ($value) { // if the filter is active, apply these constraints
+                $dates = json_decode($value);
+                $this->crud->addClause('where', 'created_at', '>=', Carbon::parse($dates->from)->toDateString());
+                $this->crud->addClause('where', 'created_at', '<=', Carbon::parse($dates->to)->toDateString());
+            });
         CRUD::column('customer');
         CRUD::column('amount');
     }
@@ -149,10 +165,13 @@ class SelloutCrudController extends CrudController
                 'type' => 'number',
                 'wrapper' => [
                     'class' => 'form-group col-md-6',
+                    'step' => 'any',
+                ],
+                'attributes' => [
                     'disabled' => 'disabled',
                     'step' => 'any',
-                ]
-            ]
+                ],
+            ],
         ]);
     }
 
@@ -227,5 +246,53 @@ class SelloutCrudController extends CrudController
         $sellout->phones()->detach();
 
         return $this->crud->delete($id);
+    }
+
+    public function index()
+    {
+        /** @var View $response */
+        $response = $this->traitIndex();
+
+        /** @var Builder $query */
+        $query = $response->getData()['crud']->query;
+        $sellouts = $query->get();
+        $phonesQuery = Phone::whereIn('id', $sellouts->pluck('id'));
+
+        $totalSoledPhones = $phonesQuery->count();
+        $totalMoneyProfit = $phonesQuery->sum('item_sellout_price') - $phonesQuery->sum('item_cost');
+
+        $this->getWidgets($totalMoneyProfit, $totalSoledPhones);
+
+        return $response;
+    }
+
+    public function getWidgets($moneyProfit, $totalSoledPhones)
+    {
+        $widgets = [];
+        $widgets[] = [
+            'type' => 'progress',
+            'class' => 'card text-white text-center bg-success mb-2',
+            'value' => number_format($totalSoledPhones),
+            'description' => 'Total Soled Phones',
+            'hint' => 'Phones newly sold',
+            'wrapper' => ['class' => 'col-md-4'],
+        ];
+
+        if (backpack_user()->can('purchase.view') || backpack_user()->can('purchase.list')) {
+            $widgets[] = [
+                'type' => 'progress',
+                'class' => 'card text-white text-center bg-danger mb-2',
+                'value' => number_format($moneyProfit).' $',
+                'description' => 'Money profit',
+                'hint' => 'Money profit from the sellouts',
+                'wrapper' => ['class' => 'col-md-4'],
+            ];
+        }
+
+        Widget::add([
+            'type' => 'div',
+            'class' => 'row',
+            'content' => $widgets,
+        ]);
     }
 }

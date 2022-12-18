@@ -14,18 +14,8 @@ class Phone extends Model
     use CrudTrait;
     use HasFactory;
 
-    /**
-     * Indicates if the model should be timestamped.
-     *
-     * @var bool
-     */
     public $timestamps = true;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
     protected $fillable = [
         'purchase_id',
         'brand_model_id',
@@ -39,11 +29,6 @@ class Phone extends Model
         'is_new',
     ];
 
-    /**
-     * The attributes that should be cast to native types.
-     *
-     * @var array
-     */
     protected $casts = [
         'id' => 'integer',
         'purchase_id' => 'integer',
