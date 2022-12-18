@@ -40,6 +40,29 @@ class SelloutCrudController extends CrudController
         CRUD::column('amount');
     }
 
+    protected function setupShowOperation(): void
+    {
+        $this->crud->setShowContentClass('col-md-12 bold-labels');
+
+        CRUD::column('customer');
+        CRUD::column('amount');
+        $this->crud->addColumn([
+            'name' => 'soledPhonesShow',
+            'label' => 'Soled Phones',
+            'type' => 'table',
+            'columns' => [
+                'brand_name' => 'Brand',
+                'brand_model_name' => 'Model',
+                'imei_1' => 'IMEI 1',
+                'imei_2' => 'IMEI 2',
+                'rom_size' => 'ROM Size',
+                'color' => 'Color',
+                'item_sellout_price' => 'Sold Price',
+                'is_new' => 'New Phone',
+            ],
+        ]);
+    }
+
     protected function setupCreateOperation(): void
     {
         CRUD::setValidation(SelloutRequest::class);
@@ -76,9 +99,9 @@ class SelloutCrudController extends CrudController
 
                         'wrapper' => ['class' => 'form-group col-md-9'],
 
-                         'options'   => (function ($query) {
-                              return $query->where('item_sellout_price', null)->get();
-                         }), // force the related options to be a custom query, instead of all(); you can use this to filter the results show in the select
+                        'options' => (function ($query) {
+                            return $query->where('item_sellout_price', null)->get();
+                        }), // force the related options to be a custom query, instead of all(); you can use this to filter the results show in the select
                     ],
                     [
                         'name' => 'price_sold',

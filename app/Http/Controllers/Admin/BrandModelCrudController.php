@@ -94,11 +94,12 @@ class BrandModelCrudController extends CrudController
             ],
             'auto_update_row' => true, // update related columns in same row, after the AJAX call?
         ]);
-        /**
-         * Columns can be defined using the fluent syntax or array syntax:
-         * - CRUD::column('price')->type('number');
-         * - CRUD::addColumn(['name' => 'price', 'type' => 'number']);
-         */
+    }
+
+    protected function setupShowOperation()
+    {
+        CRUD::column('brand');
+        CRUD::column('name');
     }
 
     /**

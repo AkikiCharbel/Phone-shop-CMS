@@ -36,6 +36,30 @@ class PurchaseCrudController extends CrudController
         CRUD::column('shipping_date');
     }
 
+    protected function setupShowOperation(): void
+    {
+        $this->crud->setShowContentClass('col-md-12 bold-labels');
+
+        CRUD::column('date');
+        CRUD::column('shipping_source');
+        CRUD::column('shipping_date');
+        $this->crud->addColumn([
+            'name' => 'soledPhonesShow',
+            'label' => 'Soled Phones',
+            'type' => 'table',
+            'columns' => [
+                'brand_name' => 'Brand',
+                'brand_model_name' => 'Model',
+                'imei_1' => 'IMEI 1',
+                'imei_2' => 'IMEI 2',
+                'rom_size' => 'ROM Size',
+                'color' => 'Color',
+                'item_cost' => 'Item Cost',
+                'is_new' => 'New Phone',
+            ],
+        ]);
+    }
+
     protected function setupCreateOperation(): void
     {
         $this->crud->setCreateContentClass('col-md-12 bold-labels');
