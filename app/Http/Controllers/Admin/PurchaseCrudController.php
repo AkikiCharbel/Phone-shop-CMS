@@ -80,10 +80,6 @@ class PurchaseCrudController extends CrudController
                         'attribute' => 'full_name', // foreign key attribute that is shown to user
 
                         'wrapper' => ['class' => 'form-group col-md-4'],
-                        // also optional
-                        //                        'options'   => (function ($query) {
-                        //                            return $query->orderBy('name', 'ASC')->where('depth', 1)->get();
-                        //                        }), // force the related options to be a custom query, instead of all(); you can use this to filter the results show in the select
                     ],
                     [
                         'name' => 'imei_1',

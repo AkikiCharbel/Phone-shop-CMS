@@ -14,10 +14,13 @@ use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 use Backpack\CRUD\app\Library\Widget;
 use Backpack\EditableColumns\Http\Controllers\Operations\MinorUpdateOperation;
 use Backpack\Pro\Http\Controllers\Operations\BulkDeleteOperation;
+use Carbon\Carbon;
+use Illuminate\Contracts\Database\Eloquent\Builder;
+use Illuminate\View\View;
 
 class PhoneCrudController extends CrudController
 {
-    use ListOperation;
+    use ListOperation { index as traitIndex; }
     use CreateOperation;
     use UpdateOperation;
     use DeleteOperation;
@@ -29,6 +32,7 @@ class PhoneCrudController extends CrudController
     {
         CRUD::setModel(\App\Models\Phone::class);
         CRUD::setRoute(config('backpack.base.route_prefix').'/phone');
+        $this->crud->setListView('vendor.backpack.crud.customized-list');
         CRUD::setEntityNameStrings('phone', 'phones');
 
         if (! backpack_user()->can('phone.view')) {
@@ -50,36 +54,20 @@ class PhoneCrudController extends CrudController
 
     protected function setupListOperation()
     {
-
         $this->crud->addFilter([
-            'type'  => 'date_range',
-            'name'  => 'from_to',
-            'label' => 'Date range'
+            'type' => 'date_range',
+            'name' => 'from_to',
+            'label' => 'Date range',
         ],
             false,
             function ($value) { // if the filter is active, apply these constraints
-                 $dates = json_decode($value);
-                 $this->crud->addClause('where', 'created_at', '>=', $dates->from);
-                 $this->crud->addClause('where', 'created_at', '<=', $dates->to . ' 23:59:59');
+            $dates = json_decode($value);
+                $this->crud->addClause('whereHas', 'purchase', function ($query) use ($dates) {
+                    $query->where('date', '>=', Carbon::parse($dates->from)->toDateString())
+                        ->where('date', '<=', Carbon::parse($dates->to)->toDateString());
+                });
             });
 
-//        Widget::add()
-//            ->to('before_content')
-//            ->type('card')
-//            ->content(null);
-//        Widget::add([
-//            'type'       => 'chart',
-//            'controller' => \App\Http\Controllers\Admin\Charts\WeeklyBuyersChartController::class,
-//
-//            // OPTIONALS
-//
-//            // 'class'   => 'card mb-2',
-//            'wrapper' => ['class'=> 'col-md-12'] ,
-//            // 'content' => [
-//            // 'header' => 'New Users',
-//            // 'body'   => 'This chart should make it obvious how many new users have signed up in the past 7 days.<br><br>',
-//            // ],
-//        ]);
         $this->crud->removeButton('create');
 
         $this->crud->addColumn([
@@ -92,12 +80,12 @@ class PhoneCrudController extends CrudController
             'attribute' => 'full_name', // foreign key attribute that is shown to user
             'model' => 'App\Models\BrandModel::class', // foreign key model
             'searchLogic' => function ($query, $column, $searchTerm) {
-                $query->orWhereHas('brandModel', function ($q) use ($column, $searchTerm) {
+                $query->orWhereHas('brandModel', function ($q) use ($searchTerm) {
                     $q->where('name', 'like', '%'.$searchTerm.'%');
-                })->orWhereHas('brandModel.brand', function ($q) use ($column, $searchTerm){
-                    $q->where('name',  'like', '%'. $searchTerm .'%');
+                })->orWhereHas('brandModel.brand', function ($q) use ($searchTerm) {
+                    $q->where('name', 'like', '%'.$searchTerm.'%');
                 });
-            }
+            },
         ]);
         CRUD::column('item_cost');
         CRUD::column('imei_1');
@@ -124,14 +112,8 @@ class PhoneCrudController extends CrudController
             'attribute' => 'full_name', // foreign key attribute that is shown to user
 
             'wrapper' => ['class' => 'form-group col-md-6'],
-            // also optional
-            //                        'options'   => (function ($query) {
-            //                            return $query->orderBy('name', 'ASC')->where('depth', 1)->get();
-            //                        }), // force the related options to be a custom query, instead of all(); you can use this to filter the results show in the select
         ]);
-//        CRUD::field('brandModel')->wrapper([
-//            'class' => 'form-group col-md-6',
-//        ]);
+
         CRUD::field('item_cost')->wrapper([
             'class' => 'form-group col-md-6',
         ])->type('number')->attributes(['step' => 'any']);
@@ -147,9 +129,6 @@ class PhoneCrudController extends CrudController
         CRUD::field('color')->wrapper([
             'class' => 'form-group col-md-6',
         ]);
-//        CRUD::field('item_sellout_price')->wrapper([
-//            'class' => 'form-group col-md-6',
-//        ]);
         CRUD::field('is_new')->wrapper([
             'class' => 'form-group col-md-6 align-self-center',
         ]);
@@ -173,5 +152,50 @@ class PhoneCrudController extends CrudController
         }
 
         return $this->crud->delete($id);
+    }
+
+    public function index()
+    {
+        /** @var View $response */
+        $response = $this->traitIndex();
+
+        /** @var Builder $query */
+        $query = $response->getData()['crud']->query;
+
+        $totalBoughtPhones = $query->count();
+        $totalMoneySpent = $query->sum('item_cost');
+
+        $this->getWidgets($totalBoughtPhones, $totalMoneySpent);
+
+        return $response;
+    }
+
+    public function getWidgets($totalBoughtPhones, $totalMoneySpent)
+    {
+        $widgets = [];
+        $widgets[] = [
+            'type' => 'progress',
+            'class' => 'card text-white text-center bg-info mb-2',
+            'value' => number_format($totalBoughtPhones),
+            'description' => 'Total New Phones',
+            'hint' => 'Phones newly bought',
+            'wrapper' => ['class' => 'col-md-6'],
+        ];
+        if (backpack_user()->can('purchase.view') || backpack_user()->can('purchase.list')) {
+            $widgets[] = [
+                'type' => 'progress',
+                'class' => 'card text-white text-center bg-danger mb-2',
+                'value' => number_format($totalMoneySpent).' $',
+                'description' => 'Total money spent on buying new phones',
+                'hint' => 'Phones newly sold',
+                'wrapper' => ['class' => 'col-md-6'],
+            ];
+        }
+
+        Widget::add([
+            'type' => 'div',
+            'class' => 'row',
+            'content' => $widgets,
+        ]);
     }
 }

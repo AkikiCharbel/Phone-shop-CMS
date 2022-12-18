@@ -5,14 +5,14 @@ namespace App\Http\Controllers\Admin\Charts;
 use App\Models\Brand;
 use App\Models\BrandModel;
 use App\Models\Phone;
-use App\Models\User;
 use Backpack\CRUD\app\Http\Controllers\ChartController;
 use ConsoleTVs\Charts\Classes\Chartjs\Chart;
+
 //use ConsoleTVs\Charts\Classes\Fusioncharts\Chart;
 
 /**
  * Class WeeklyBuyersChartController
- * @package App\Http\Controllers\Admin\Charts
+ *
  * @property-read \Backpack\CRUD\app\Library\CrudPanel\CrudPanel $crud
  */
 class WeeklyBuyersChartController extends ChartController
@@ -34,15 +34,15 @@ class WeeklyBuyersChartController extends ChartController
         $this->chart->load(backpack_url('charts/weekly-buyers'));
 
         // OPTIONAL
-         $this->chart->minimalist(false);
-         $this->chart->displayLegend(true);
+        $this->chart->minimalist(false);
+        $this->chart->displayLegend(true);
     }
 
-    /**
-     * Respond to AJAX calls with all the chart data points.
-     *
-     * @return json
-     */
+     /**
+      * Respond to AJAX calls with all the chart data points.
+      *
+      * @return json
+      */
      public function data()
      {
          for ($days_backwards = 30; $days_backwards >= 0; $days_backwards--) {
@@ -56,11 +56,6 @@ class WeeklyBuyersChartController extends ChartController
                  ->subDays($days_backwards))
                  ->count();
          }
-dd($phones);
-//         $this->chart->dataset('Users', 'line', $users)
-//             ->color('rgb(77, 189, 116)')
-//             ->backgroundColor('rgba(77, 189, 116, 0.4)');
-
          $this->chart->dataset('Phones', 'line', $phones)
              ->color('rgb(96, 92, 168)')
              ->backgroundColor('rgba(96, 92, 168, 0.4)');

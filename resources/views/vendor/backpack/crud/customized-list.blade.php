@@ -175,29 +175,4 @@
     </script>
   {{-- CRUD LIST CONTENT - crud_list_scripts stack --}}
   @stack('crud_list_scripts')
-
-  @php
-      $allCustomers = \App\Models\User::whereHas('roles', function ($query) {
-                   $query->where('name', 'customer');
-               })->whereHas('sellouts')->with('sellouts')->get();
-      $customerWithAmountLeft = $allCustomers->filter(function ($customer) {
-          return $customer->where('amount_left', '>', 0);
-      });
-  @endphp
-  <script>
-        window.onload = function () {
-            window.crud.table.on('draw', function () {
-                @php
-          foreach($customerWithAmountLeft as $customer){
-              if($customer->amount_left > 0){
-                  echo "$(\"a[href$='" . $customer->id . "/show']\").parent().parent().addClass('bg-danger');";
-              }else{
-                  echo "$(\"a[href$='" . $customer->id . "/show']\").parent().parent().removeClass('bg-danger');";
-              }
-              echo "$(\"a[href$='" . $customer->id . "/show']\").parent().parent().children('td').eq(4).html('<span>" . $customer->amount_left . "</span>');";
-         }
-      @endphp
-      });
-  };
-</script>
 @endsection
