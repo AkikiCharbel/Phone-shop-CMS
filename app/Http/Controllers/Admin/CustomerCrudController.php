@@ -71,6 +71,13 @@ class CustomerCrudController extends CrudController
         CRUD::column('email');
     }
 
+    protected function setupShowOperation(): void
+    {
+        CRUD::column('name');
+        CRUD::column('phone_number');
+        CRUD::column('email');
+    }
+
     protected function setupCreateOperation(): void
     {
         CRUD::setValidation(CustomerRequest::class);

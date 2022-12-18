@@ -73,6 +73,29 @@ class SelloutCrudController extends CrudController
         CRUD::column('amount');
     }
 
+    protected function setupShowOperation(): void
+    {
+        $this->crud->setShowContentClass('col-md-12 bold-labels');
+
+        CRUD::column('customer');
+        CRUD::column('amount');
+        $this->crud->addColumn([
+            'name' => 'soledPhonesShow',
+            'label' => 'Soled Phones',
+            'type' => 'table',
+            'columns' => [
+                'brand_name' => 'Brand',
+                'brand_model_name' => 'Model',
+                'imei_1' => 'IMEI 1',
+                'imei_2' => 'IMEI 2',
+                'rom_size' => 'ROM Size',
+                'color' => 'Color',
+                'item_sellout_price' => 'Sold Price',
+                'is_new' => 'New Phone',
+            ],
+        ]);
+    }
+
     protected function setupCreateOperation(): void
     {
         CRUD::setValidation(SelloutRequest::class);

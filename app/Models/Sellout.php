@@ -34,6 +34,7 @@ class Sellout extends Model
         'id' => 'integer',
         'customer_id' => 'integer',
         'amount' => 'float',
+        'is_new' => 'boolean',
     ];
 
     public function customer(): BelongsTo
@@ -71,7 +72,31 @@ class Sellout extends Model
                         'soled_phone_id' => $phone->id,
                     ];
                 }
+                return $phones;
+            }
+        );
+    }
 
+    protected function soledPhonesShow(): Attribute
+    {
+        return Attribute::make(
+            get: function () {
+                $phones = [];
+                foreach ($this->phones as $phone) {
+                    $phones[] = [
+                        'phone_id' => $phone->id,
+                        'brand_model_name' => $phone->brandModel->name,
+                        'brand_name' => $phone->brandModel->brand->name,
+                        'item_cost' => $phone->item_cost,
+                        'imei_1' => $phone->imei_1,
+                        'imei_2' => $phone->imei_2,
+                        'rom_size' => $phone->rom_size,
+                        'color' => $phone->color,
+                        'description' => $phone->description,
+                        'item_sellout_price' => $phone->item_sellout_price,
+                        'is_new' => ($phone->is_new == 1) ? 'New' : 'Used',
+                    ];
+                }
                 return $phones;
             }
         );
