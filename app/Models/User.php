@@ -62,13 +62,14 @@ class User extends Authenticatable
         return Attribute::make(
             get: function () {
                 $sellouts = [];
-                foreach ($this->sellouts as $sellout){
+                foreach ($this->sellouts as $sellout) {
                     $sellouts[] = [
-                        'amount' => $sellout->amount .' $',
-                        'amount_left' => $sellout->amount - $sellout->selloutPayments()->sum('amount') . ' $',
-                        'link' => '<a href="'.config('app.url').'/admin/sellout/' . $sellout->id . '/edit">Sellout Link</a>',
+                        'amount' => $sellout->amount.' $',
+                        'amount_left' => $sellout->amount - $sellout->selloutPayments()->sum('amount').' $',
+                        'link' => '<a href="'.config('app.url').'/admin/sellout/'.$sellout->id.'/edit">Update Invoice</a>',
                     ];
                 }
+
                 return $sellouts;
             }
         );

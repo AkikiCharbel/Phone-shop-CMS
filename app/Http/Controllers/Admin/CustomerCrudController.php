@@ -62,7 +62,7 @@ class CustomerCrudController extends CrudController
         ],
             false,
             function ($value) { // if the filter is active, apply these constraints
-                $dates = json_decode($value);
+            $dates = json_decode($value);
                 $this->crud->addClause('where', 'created_at', '>=', Carbon::parse($dates->from)->toDateString());
                 $this->crud->addClause('where', 'created_at', '<=', Carbon::parse($dates->to)->toDateString());
             });
@@ -76,15 +76,22 @@ class CustomerCrudController extends CrudController
         CRUD::column('name');
         CRUD::column('phone_number');
         CRUD::column('email');
-        $this->crud->addColumn([
-            'name' => 'selloutsList',
-            'label' => 'Sellouts',
-            'type' => 'table-accept-html',
-            'columns' => [
-                'amount' => 'Amount To Pay',
-                'amount_left' => 'Amount Left',
-                'link' => 'Link',
+        $this->crud->addColumns([
+            [
+                'name' => 'selloutsList',
+                'label' => 'Sellouts',
+                'type' => 'table-accept-html',
+                'columns' => [
+                    'amount' => 'Amount To Pay',
+                    'amount_left' => 'Amount Left',
+                    'link' => 'Link',
+                ],
             ],
+            [
+                'name' => 'amountLeft',
+                'label' => 'Sum Amount Left',
+                'type' => 'text'
+            ]
         ]);
     }
 
@@ -157,7 +164,5 @@ class CustomerCrudController extends CrudController
 //        }
 
         Widget::add()->to('before_content')->type('div')->class('row')->content($widgets);
-
     }
-
 }
