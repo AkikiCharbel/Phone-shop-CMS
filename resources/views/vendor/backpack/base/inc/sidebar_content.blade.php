@@ -33,5 +33,6 @@
 @if(backpack_user()->hasPermissionTo('brand-model.view'))
 <li class="nav-item"><a class="nav-link" href="{{ backpack_url('brand-model') }}"><i class="nav-icon las la-stream"></i> Brand models</a></li>
 @endif
-
-{{--<li class="nav-item"><a class="nav-link" href="{{ backpack_url('sellout-payment') }}"><i class="nav-icon la la-question"></i> Sellout payments</a></li>--}}
+@if(backpack_user()->hasPermissionTo('customer-dept.view'))
+<li class="nav-item"><a class="nav-link" href="{{ backpack_url('customer-debt') }}"><i class="nav-icon las la-hand-holding-usd"></i> Customer debts</a></li>
+@endif
