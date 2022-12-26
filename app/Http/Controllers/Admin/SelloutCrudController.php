@@ -107,14 +107,14 @@ class SelloutCrudController extends CrudController
                 'name' => 'customer_id', // the method on your model that defines the relationship
                 'ajax' => true,
                 'minimum_input_length' => 0,
-//                'inline_create' => [ // specify the entity in singular
-//                    'data_source' => backpack_url('monster/fetch/contact-number'),
-//                    'entity' => 'User', // the entity in singular
-//                    'force_select' => true, // should the inline-created entry be immediately selected?
-//                    'modal_class' => 'modal-dialog modal-xl', // use modal-sm, modal-lg to change width
-//                    'modal_route' => route('customer-inline-create'), // InlineCreate::getInlineCreateModal()
-//                    'create_route' => route('customer-inline-create-save'), // InlineCreate::storeInlineCreate()
-//                ],
+                //                'inline_create' => [ // specify the entity in singular
+                //                    'data_source' => backpack_url('monster/fetch/contact-number'),
+                //                    'entity' => 'User', // the entity in singular
+                //                    'force_select' => true, // should the inline-created entry be immediately selected?
+                //                    'modal_class' => 'modal-dialog modal-xl', // use modal-sm, modal-lg to change width
+                //                    'modal_route' => route('customer-inline-create'), // InlineCreate::getInlineCreateModal()
+                //                    'create_route' => route('customer-inline-create-save'), // InlineCreate::storeInlineCreate()
+                //                ],
             ],
             [   // repeatable
                 'name' => 'soled_phones',

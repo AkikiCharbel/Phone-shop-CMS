@@ -90,8 +90,8 @@ class CustomerCrudController extends CrudController
             [
                 'name' => 'amountLeft',
                 'label' => 'Sum Amount Left',
-                'type' => 'text'
-            ]
+                'type' => 'text',
+            ],
         ]);
     }
 
