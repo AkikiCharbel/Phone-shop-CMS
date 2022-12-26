@@ -64,7 +64,7 @@ class PermissionSeeder extends Seeder
         $role = Role::create(['name' => 'employee']);
         $role->givePermissionTo([
             'sellout.view', 'sellout.list', 'sellout.delete', 'sellout.update', 'sellout.create',
-            'phone.view', 'phone.list', 'customer.list', 'customer.view', 'customer.create', 'customer.update',
+            'customer.list', 'customer.view', 'customer.create', 'customer.update',
         ]);
         $role = Role::create(['name' => 'customer']);
     }

@@ -72,6 +72,7 @@ class Sellout extends Model
                         'soled_phone_id' => $phone->id,
                     ];
                 }
+
                 return $phones;
             }
         );
@@ -97,6 +98,7 @@ class Sellout extends Model
                         'is_new' => ($phone->is_new == 1) ? 'New' : 'Used',
                     ];
                 }
+
                 return $phones;
             }
         );
